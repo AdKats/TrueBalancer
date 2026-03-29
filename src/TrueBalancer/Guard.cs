@@ -1,15 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -25,7 +15,7 @@ namespace PRoConEvents
     {
         #region Guard
 
-        public void DebugInfoGuard(string DebugMessage)
+        public void DebugInfoGuard(String DebugMessage)
         {
             if (ynbDebugModeGuard == enumBoolYesNo.Yes)
             {
@@ -33,11 +23,11 @@ namespace PRoConEvents
             }
         }
 
-        public List<string> GetSoldierNames()
+        public List<String> GetSoldierNames()
         {
-            List<string> soldierNames = new List<string>();
+            List<String> soldierNames = new List<String>();
 
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 soldierNames.Add(kvp.Key);
             }
@@ -45,7 +35,7 @@ namespace PRoConEvents
             return soldierNames;
         }
 
-        public void OnCommandTBForceMove(string strSpeaker, string strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
+        public void OnCommandTBForceMove(String strSpeaker, String strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
         {
             if (capCommand.MatchedArguments.Count == 0)
             {
@@ -61,7 +51,7 @@ namespace PRoConEvents
                 return;
             }
 
-            string player = capCommand.MatchedArguments[0].Argument;
+            String player = capCommand.MatchedArguments[0].Argument;
             this.DebugInfoGuard("^4Force Moving Player: ^b" + player);
 
             this.DTForceMove = DateTime.Now;
@@ -75,7 +65,7 @@ namespace PRoConEvents
                 this.OnCommandMove[player] = true;
             }
 
-            int team = 0;
+            Int32 team = 0;
 
             if (this.dicPlayerCache[player].teamID == 1)
                 team = 2;
@@ -94,7 +84,7 @@ namespace PRoConEvents
 
         }
 
-        public void OnCommandTBMove(string strSpeaker, string strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
+        public void OnCommandTBMove(String strSpeaker, String strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
         {
             if (capCommand.MatchedArguments.Count == 0)
             {
@@ -109,7 +99,7 @@ namespace PRoConEvents
                 }
                 return;
             }
-            string player = capCommand.MatchedArguments[0].Argument;
+            String player = capCommand.MatchedArguments[0].Argument;
             this.DebugInfoGuard("^4Move Player when dead: ^b" + player);
             if (this.boolVirtual)
             {
@@ -133,8 +123,6 @@ namespace PRoConEvents
                 this.OnCommandMove[player] = false;
             }
         }
-
-
 
         #endregion
     }

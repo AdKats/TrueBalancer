@@ -1,15 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -25,7 +15,7 @@ namespace PRoConEvents
     {
         #region TrueBalancer Functions
 
-        public void DebugInfo(string DebugMessage)
+        public void DebugInfo(String DebugMessage)
         {
             if (ynbDebugMode == enumBoolYesNo.Yes)
             {
@@ -59,7 +49,7 @@ namespace PRoConEvents
             this.TBvalueA = 0;
             this.TBvalueB = 0;
 
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (!dicPlayerCache[kvp.Key].IsCommander && !dicPlayerCache[kvp.Key].IsSpectator)
                 {
@@ -147,10 +137,6 @@ namespace PRoConEvents
                 this.boolwaitdead = false;
             }
 
-
-
-
-
             if (!this.boolscrambleActive)
             {
 
@@ -161,7 +147,6 @@ namespace PRoConEvents
                     this.ExecuteCommand("procon.protected.send", "serverInfo");
                 }
 
-
                 if (this.strcurrentGametype.Contains("Conquest") || this.strcurrentGametype.Contains("TankSuperiority0") || this.strcurrentGametype.Contains("Rush") || this.strcurrentGametype.Contains("GunMaster") || this.strcurrentGametype.Contains("Scavenger") || this.strcurrentGametype.Contains("AirSuperiority0") || this.strcurrentGametype.Contains("CaptureTheFlag0") || this.strcurrentGametype.Contains("Elimination") || this.strcurrentGametype.Contains("CarrierAssault") || this.strcurrentGametype.Contains("Chainlink"))
                 {
                     if (this.intScoreTeamA > this.intminScore && this.intScoreTeamB > this.intminScore)
@@ -170,7 +155,7 @@ namespace PRoConEvents
                         if (this.intcountWarnings == 0 && this.boolneedbalance)
                         {
                             this.intcountWarnings = 1;
-                            string strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
+                            String strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
                             strTEMP = strTEMP.Replace("%maxWarnings%", Convert.ToString(this.intWarnings));
                             if (ynbShowWarnings == enumBoolYesNo.Yes)
                             {
@@ -217,7 +202,7 @@ namespace PRoConEvents
                         if (this.intcountWarnings == 0 && this.boolneedbalance)
                         {
                             this.intcountWarnings = 1;
-                            string strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
+                            String strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
                             strTEMP = strTEMP.Replace("%maxWarnings%", Convert.ToString(this.intWarnings));
                             if (ynbShowWarnings == enumBoolYesNo.Yes)
                             {
@@ -264,7 +249,7 @@ namespace PRoConEvents
                         if (this.intcountWarnings == 0 && this.boolneedbalance)
                         {
                             this.intcountWarnings = 1;
-                            string strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
+                            String strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
                             strTEMP = strTEMP.Replace("%maxWarnings%", Convert.ToString(this.intWarnings));
                             if (ynbShowWarnings == enumBoolYesNo.Yes)
                             {
@@ -311,7 +296,7 @@ namespace PRoConEvents
                         if (this.intcountWarnings == 0 && this.boolneedbalance)
                         {
                             this.intcountWarnings = 1;
-                            string strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
+                            String strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
                             strTEMP = strTEMP.Replace("%maxWarnings%", Convert.ToString(this.intWarnings));
                             if (ynbShowWarnings == enumBoolYesNo.Yes)
                             {
@@ -327,7 +312,6 @@ namespace PRoConEvents
 
                             this.DebugInfo(strTEMP);
                         }
-
 
                         if (this.boolneedbalance && this.booltimer == false)
                         {
@@ -351,7 +335,6 @@ namespace PRoConEvents
                         this.DebugInfo("^3Not starting Balance. Tickets till Endround: TeamA: ^b" + this.intScoreTeamA + "^n, TeamB: ^b" + this.intScoreTeamB);
                     }
                 }
-
 
             }
             else
@@ -397,7 +380,7 @@ namespace PRoConEvents
                 if (this.intcountWarnings <= this.intWarnings)
                 {
                     // Warnungen ausgeben. strWarning
-                    string strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
+                    String strTEMP = this.strWarning.Replace("%Warning%", Convert.ToString(this.intcountWarnings));
                     strTEMP = strTEMP.Replace("%maxWarnings%", Convert.ToString(this.intWarnings));
                     if (ynbShowWarnings == enumBoolYesNo.Yes)
                     {
@@ -521,11 +504,10 @@ namespace PRoConEvents
             //DateTime maxValue = new DateTime();
             this.strMovedPlayer = "";
 
+            Dictionary<String, CPlayerJoinInf> dicPlayerSorted = new Dictionary<String, CPlayerJoinInf>();
+            Dictionary<String, CPlayerJoinInf> dicPlayerSortedTEMP = new Dictionary<String, CPlayerJoinInf>();
 
-            Dictionary<string, CPlayerJoinInf> dicPlayerSorted = new Dictionary<string, CPlayerJoinInf>();
-            Dictionary<string, CPlayerJoinInf> dicPlayerSortedTEMP = new Dictionary<string, CPlayerJoinInf>();
-
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (this.dicPlayerCache[kvp.Key].teamID == this.intFromTeam && this.dicPlayerCache[kvp.Key].playerWL == 0 && !dicPlayerCache[kvp.Key].IsCommander && !dicPlayerCache[kvp.Key].IsSpectator)
                 {
@@ -552,15 +534,15 @@ namespace PRoConEvents
             }
             */
 
-            bool Sortiert = true;
+            Boolean Sortiert = true;
             do
             {
                 Sortiert = true;
                 DateTime maxValueJoined = new DateTime();
-                int minscore = 100000000;
-                KeyValuePair<string, CPlayerJoinInf> kvplastjoiner = new KeyValuePair<string, CPlayerJoinInf>();
+                Int32 minscore = 100000000;
+                KeyValuePair<String, CPlayerJoinInf> kvplastjoiner = new KeyValuePair<String, CPlayerJoinInf>();
 
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp2 in dicPlayerSortedTEMP)
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp2 in dicPlayerSortedTEMP)
                 {
 
                     if (dicPlayerSorted.ContainsKey(kvp2.Key) == false && dicPlayerSortedTEMP[kvp2.Key].score < minscore)
@@ -586,10 +568,9 @@ namespace PRoConEvents
 
             } while (!Sortiert);
 
-
-            string strsorted = "";
-            string printSoldier = "";
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in dicPlayerSorted)
+            String strsorted = "";
+            String printSoldier = "";
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in dicPlayerSorted)
             {
                 printSoldier = kvp.Key.Replace("{", "(");
                 printSoldier = printSoldier.Replace("}", ")");
@@ -600,11 +581,10 @@ namespace PRoConEvents
 
             this.DebugInfo(strsorted);
 
+            List<String> ToBeMovedList = new List<String>(dicPlayerSorted.Keys);
+            Int32 itemCount = ToBeMovedList.Count;
 
-            List<string> ToBeMovedList = new List<string>(dicPlayerSorted.Keys);
-            int itemCount = ToBeMovedList.Count;
-
-            int dblcutoff = 5;
+            Int32 dblcutoff = 5;
             if (this.intFromTeam == 1)
             {
                 if (this.TeamA / 2 > 5)
@@ -616,24 +596,24 @@ namespace PRoConEvents
                     dblcutoff = this.TeamB / 2;
             }
             this.DebugInfo("Cutoff: ^b" + dblcutoff.ToString());
-            for (int k = itemCount - 1; k >= dblcutoff; k--)
+            for (Int32 k = itemCount - 1; k >= dblcutoff; k--)
             {
                 //this.DebugInfo("removed");
                 ToBeMovedList.RemoveAt(k);
                 //itemCount = ToBeMovedList.Count;
             }
 
-            string completelist = "";
+            String completelist = "";
             itemCount = ToBeMovedList.Count;
-            for (int k = 0; k < itemCount; k++)
+            for (Int32 k = 0; k < itemCount; k++)
             {
                 completelist = completelist + "^0^b" + ToBeMovedList[k] + "^9^n: ^4" + this.dicPlayerCache[ToBeMovedList[k]].score + "^9 -=- ";
             }
             this.DebugInfo(completelist);
 
-            bool willbebalanced = false;
+            Boolean willbebalanced = false;
 
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (this.dicPlayerCache[kvp.Key].tobebalanced && this.dicPlayerCache[kvp.Key].teamID == this.intFromTeam)
                 {
@@ -656,7 +636,7 @@ namespace PRoConEvents
             }
             else
             {
-                string strTEMP = this.strLastWarning.Replace("%MovedPlayer%", this.strMovedPlayer);
+                String strTEMP = this.strLastWarning.Replace("%MovedPlayer%", this.strMovedPlayer);
                 if (ynbShowBallancing == enumBoolYesNo.Yes)
                 {
                     if (this.boolVirtual)
@@ -686,7 +666,7 @@ namespace PRoConEvents
                 this.dicPlayerCache[this.strMovedPlayer].playerWL = 2;
                 this.dicPlayerCache[this.strMovedPlayer].tobebalanced = false;
                 dicPlayerCache[this.strMovedPlayer].Playerjoined = DateTime.Now;
-                string strTEMP2 = this.strBeenMoved.Replace("%MovedPlayer%", this.strMovedPlayer);
+                String strTEMP2 = this.strBeenMoved.Replace("%MovedPlayer%", this.strMovedPlayer);
 
                 if (ynbShowPlayermessage == enumBoolYesNo.Yes)
                 {

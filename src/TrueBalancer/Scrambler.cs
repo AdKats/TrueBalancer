@@ -1,15 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -25,7 +17,7 @@ namespace PRoConEvents
     {
         #region SkillScrambler
 
-        public void DebugInfoSkill(string DebugMessage)
+        public void DebugInfoSkill(String DebugMessage)
         {
             if (ynbDebugModeSkill == enumBoolYesNo.Yes)
             {
@@ -42,13 +34,12 @@ namespace PRoConEvents
             // NEU - Die Squadsortierung und das scramblen hier nach unten verschieben, um sicherzustellen, dass auch nur die gescrambled werden, die auch auf dem Server sind.
             DebugInfoSkill("^4Starting Scrambler now!");
 
-            int CompareSlots = 0;
+            Int32 CompareSlots = 0;
 
             if (this.intMaxSlots >= 48)
                 CompareSlots = intMaxSlots - 1;
             else
                 CompareSlots = intMaxSlots;
-
 
             if (this.dicPlayerCache.Count < CompareSlots)
             {
@@ -60,8 +51,6 @@ namespace PRoConEvents
                 this.boolFirstOP = false;
                 this.intScrambleCount = 0;
                 this.strErrorMsg = "";
-
-
 
                 if (this.strScrambleMode == "Keep all Squads")
                 {
@@ -76,10 +65,8 @@ namespace PRoConEvents
                     KeepNoSquads();
                 }
 
-
-
                 //move them all out of squads
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
                 {
                     if (this.boolVirtual)
                     {
@@ -91,7 +78,6 @@ namespace PRoConEvents
                     }
                 }
                 ScrambleNow();
-
 
                 //this.ExecuteCommand("procon.protected.tasks.add", "WaitScrambleTimer", "1", "1", "1",  "procon.protected.plugins.call", "TrueBalancer", "ScrambleNow");
             }
@@ -107,7 +93,7 @@ namespace PRoConEvents
 
             this.boolscrambleNow = true;
             this.intScrambleCount++;
-            bool boolScrambledall = true;
+            Boolean boolScrambledall = true;
             this.DebugInfoSkill("^4Scrambling now!");
 
             TimeSpan ScrambleTime = new TimeSpan(0);
@@ -154,11 +140,11 @@ namespace PRoConEvents
 
                     if (this.strErrorMsg == "SetSquadFailed")
                     {
-                        string strfailedSquad = "";
-                        int SSFTeamID = 0;
-                        int intnewSquad = 0;
+                        String strfailedSquad = "";
+                        Int32 SSFTeamID = 0;
+                        Int32 intnewSquad = 0;
 
-                        foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                        foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                         {
                             if (this.m_isPluginEnabled == false) break;
                             if (this.dicPlayerCache.ContainsKey(this.dicPlayerScore[kvp.Key].playerName) && !this.dicPlayerScore[kvp.Key].scrambled)
@@ -215,7 +201,7 @@ namespace PRoConEvents
                             }
                         }
 
-                        for (int j = 1; j <= 20; j++)
+                        for (Int32 j = 1; j <= 20; j++)
                         {
                             if (!this.dicSquadList.ContainsKey(SSFTeamID + "." + j))
                             {
@@ -226,9 +212,9 @@ namespace PRoConEvents
 
                         }
 
-                        int playersinsquad = 0;
+                        Int32 playersinsquad = 0;
 
-                        foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                        foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                         {
                             if (this.m_isPluginEnabled == false) break;
                             this.strFinalSquad = this.dicPlayerScore[kvp.Key].teamID + "." + this.dicPlayerScore[kvp.Key].playerSquad;
@@ -269,12 +255,10 @@ namespace PRoConEvents
                             }
                         }
 
-
-
                     }
                     else
                     {
-                        foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                        foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                         {
                             if (this.m_isPluginEnabled == false) break;
                             if (this.dicPlayerCache.ContainsKey(this.dicPlayerScore[kvp.Key].playerName) && !this.dicPlayerScore[kvp.Key].scrambled)
@@ -346,9 +330,9 @@ namespace PRoConEvents
             }
         }
 
-        public void OnCommandScrambleNow(string strSpeaker, string strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
+        public void OnCommandScrambleNow(String strSpeaker, String strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
         {
-            bool blIsAdmin = false;
+            Boolean blIsAdmin = false;
             CPrivileges cpAccount = this.GetAccountPrivileges(strSpeaker);
             if (cpAccount != null && cpAccount.PrivilegesFlags > 0) { blIsAdmin = true; }
 
@@ -384,28 +368,26 @@ namespace PRoConEvents
                                 }
                             }
 
-                            int i = 1;
+                            Int32 i = 1;
                             this.dicPlayerScore.Clear();
                             this.dicSquadScore.Clear();
                             this.bestSquadTeamID = 0;
 
-
-                            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+                            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
                             {
-                                double value = this.dicPlayerCache[kvp.Key].playerValue;
-                                string tag = this.dicPlayerCache[kvp.Key].tag;
+                                Double value = this.dicPlayerCache[kvp.Key].playerValue;
+                                String tag = this.dicPlayerCache[kvp.Key].tag;
                                 CPlayerScoreInf newEntry = new CPlayerScoreInf(kvp.Key, this.dicPlayerCache[kvp.Key].teamID, this.dicPlayerCache[kvp.Key].playerSquad, value, false, false, tag);
                                 this.dicPlayerScore.Add(i, newEntry);
                                 i++;
 
                             }
 
-
-                            bool Sortiert;
+                            Boolean Sortiert;
                             do
                             {
                                 Sortiert = true;
-                                for (int j = 1; j < this.dicPlayerScore.Count; j++)
+                                for (Int32 j = 1; j < this.dicPlayerScore.Count; j++)
                                 {
                                     if (this.dicPlayerScore[j].playerValue < this.dicPlayerScore[j + 1].playerValue)
                                     {
@@ -423,7 +405,6 @@ namespace PRoConEvents
                             this.boolTeamsScrambled = false;
                             this.intScrambledPlayers = 0;
                             this.teamswitcher.Clear();
-
 
                             this.ExecuteCommand("procon.protected.tasks.add", "WaitScrambleTimer", "3", "1", "1", "procon.protected.plugins.call", "TrueBalancer", "StartScrambler");
                             //StartScrambler();
@@ -459,9 +440,9 @@ namespace PRoConEvents
             }
         }
 
-        public void OnCommandScrambleRound(string strSpeaker, string strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
+        public void OnCommandScrambleRound(String strSpeaker, String strText, MatchCommand mtcCommand, CapturedCommand capCommand, CPlayerSubset subMatchedScope)
         {
-            bool blIsAdmin = false;
+            Boolean blIsAdmin = false;
             CPrivileges cpAccount = this.GetAccountPrivileges(strSpeaker);
             if (cpAccount != null && cpAccount.PrivilegesFlags > 0) { blIsAdmin = true; }
             if (blIsAdmin)
@@ -550,7 +531,7 @@ namespace PRoConEvents
             }
         }
 
-        public void LogMove(string MoveMsg)
+        public void LogMove(String MoveMsg)
         {
             if (showMoves == enumBoolYesNo.Yes)
             {
@@ -562,17 +543,17 @@ namespace PRoConEvents
         {
 
             //KEEP ALL SQUADS START
-            string DebugScoreList = "";
-            string strTeam1 = "";
-            string strTeam2 = "";
-            bool squadexists = false;
-            int squadIDnew = 0;
+            String DebugScoreList = "";
+            String strTeam1 = "";
+            String strTeam2 = "";
+            Boolean squadexists = false;
+            Int32 squadIDnew = 0;
 
-            int intTeamA = 0;
-            int intTeamB = 0;
+            Int32 intTeamA = 0;
+            Int32 intTeamB = 0;
 
-            List<int> toremoveKeys = new List<int>();
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            List<Int32> toremoveKeys = new List<Int32>();
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -597,19 +578,18 @@ namespace PRoConEvents
                     toremoveKeys.Add(kvp.Key);
                 }
             }
-            foreach (int removeKey in toremoveKeys)
+            foreach (Int32 removeKey in toremoveKeys)
             {
                 this.dicPlayerScore.Remove(removeKey);
             }
 
-
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
 
                 if (this.dicPlayerScore[kvp.Key].playerSquad != 0)
                 {
                     squadexists = false;
-                    foreach (KeyValuePair<int, CSquadScoreInf> kvpsquad in this.dicSquadScore)
+                    foreach (KeyValuePair<Int32, CSquadScoreInf> kvpsquad in this.dicSquadScore)
                     {
                         if (this.dicSquadScore[kvpsquad.Key].teamID == this.dicPlayerScore[kvp.Key].teamID &&
                                     this.dicSquadScore[kvpsquad.Key].squadID == this.dicPlayerScore[kvp.Key].playerSquad)
@@ -630,18 +610,17 @@ namespace PRoConEvents
 
             }
 
-
-            foreach (KeyValuePair<int, CSquadScoreInf> kvpsquad in this.dicSquadScore)
+            foreach (KeyValuePair<Int32, CSquadScoreInf> kvpsquad in this.dicSquadScore)
             {
                 this.dicSquadScore[kvpsquad.Key].squadScore = this.dicSquadScore[kvpsquad.Key].squadScore / this.dicSquadScore[kvpsquad.Key].squadsize;
             }
 
-            bool Sortiert = true;
+            Boolean Sortiert = true;
 
             do
             {
                 Sortiert = true;
-                for (int j = 1; j < this.dicSquadScore.Count; j++)
+                for (Int32 j = 1; j < this.dicSquadScore.Count; j++)
                 {
                     if (this.dicSquadScore[j].squadsize < this.dicSquadScore[j + 1].squadsize)
                     {
@@ -661,13 +640,12 @@ namespace PRoConEvents
 
             } while (!Sortiert);
 
-            string DebugSquadSorted = "";
-            foreach (KeyValuePair<int, CSquadScoreInf> kvpsquad in this.dicSquadScore)
+            String DebugSquadSorted = "";
+            foreach (KeyValuePair<Int32, CSquadScoreInf> kvpsquad in this.dicSquadScore)
             {
                 DebugSquadSorted = DebugSquadSorted + "^0" + this.dicSquadScore[kvpsquad.Key].teamID + "." + this.dicSquadScore[kvpsquad.Key].squadID +
                                     ": ^7" + this.dicSquadScore[kvpsquad.Key].squadsize + "^9*^5" + this.dicSquadScore[kvpsquad.Key].squadScore + "^9 --- ";
             }
-
 
             DebugScoreList = "Before Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugScoreList);
@@ -675,16 +653,16 @@ namespace PRoConEvents
             bestSquadTeamID = this.dicSquadScore[1].teamID;
             this.DebugInfoSkill("Squads sorted: " + DebugSquadSorted);
 
-            List<int> SquadsTeamA = new List<int>();
-            List<int> SquadsTeamB = new List<int>();
-            double TeamValueA = 0;
-            int TeamSizeA = 0;
-            double TeamValueB = 0;
-            int TeamSizeB = 0;
+            List<Int32> SquadsTeamA = new List<Int32>();
+            List<Int32> SquadsTeamB = new List<Int32>();
+            Double TeamValueA = 0;
+            Int32 TeamSizeA = 0;
+            Double TeamValueB = 0;
+            Int32 TeamSizeB = 0;
 
-            int n = 0;
+            Int32 n = 0;
 
-            foreach (KeyValuePair<int, CSquadScoreInf> kvpsquad in this.dicSquadScore)
+            foreach (KeyValuePair<Int32, CSquadScoreInf> kvpsquad in this.dicSquadScore)
             {
                 if (n == 0 && kvpsquad.Key == 1)
                     SquadsTeamA.Add(kvpsquad.Key);
@@ -699,43 +677,42 @@ namespace PRoConEvents
                     n = 1;
             }
 
-            foreach (int squadID in SquadsTeamA)
+            foreach (Int32 squadID in SquadsTeamA)
             {
                 TeamValueA = TeamValueA + this.dicSquadScore[squadID].squadScore * this.dicSquadScore[squadID].squadsize;
                 TeamSizeA = TeamSizeA + this.dicSquadScore[squadID].squadsize;
             }
 
-            foreach (int squadID in SquadsTeamB)
+            foreach (Int32 squadID in SquadsTeamB)
             {
                 TeamValueB = TeamValueB + this.dicSquadScore[squadID].squadScore * this.dicSquadScore[squadID].squadsize;
                 TeamSizeB = TeamSizeB + this.dicSquadScore[squadID].squadsize;
             }
 
-
-            double AverageTeamA = TeamValueA / TeamSizeA;
-            double AverageTeamB = TeamValueB / TeamSizeB;
-            double AverageDiff = AverageTeamA - AverageTeamB;
+            Double AverageTeamA = TeamValueA / TeamSizeA;
+            Double AverageTeamB = TeamValueB / TeamSizeB;
+            Double AverageDiff = AverageTeamA - AverageTeamB;
 
             this.DebugInfoSkill("SortValue before adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference before adjustment: ^b^2" + AverageDiff);
 
-            bool adjusted = false;
+            Boolean adjusted = false;
             do
             {
                 adjusted = true;
-                double tempTeamValueA = 0;
-                double tempTeamValueB = 0;
-                double tempAverageTeamA = 0;
-                double tempAverageTeamB = 0;
-                double tempAverageDiff = 0;
-                double adjustvalue = AverageDiff;
-                int moveIDA = 0;
-                int moveIDB = 0;
+                Double tempTeamValueA = 0;
+                Double tempTeamValueB = 0;
+                Double tempAverageTeamA = 0;
+                Double tempAverageTeamB = 0;
+                Double tempAverageDiff = 0;
+                Double adjustvalue = AverageDiff;
+                Int32 moveIDA = 0;
+                Int32 moveIDB = 0;
 
-                foreach (int squadIDA in SquadsTeamA)
+                foreach (Int32 squadIDA in SquadsTeamA)
                 {
-                    foreach (int squadIDB in SquadsTeamB)
+                    foreach (Int32 squadIDB in SquadsTeamB)
                     {
                         if (adjustvalue > 0 && this.dicSquadScore[squadIDA].squadScore > this.dicSquadScore[squadIDB].squadScore && this.dicSquadScore[squadIDA].squadsize == this.dicSquadScore[squadIDB].squadsize)
                         {
@@ -779,8 +756,6 @@ namespace PRoConEvents
                     }
                 }
 
-
-
                 if (!adjusted)
                 {
                     SquadsTeamA.Remove(moveIDA);
@@ -802,27 +777,23 @@ namespace PRoConEvents
 
             } while (!adjusted);
 
-
             this.DebugInfoSkill("SortValue ^bafter^n adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference ^bafter ^nadjustment: ^b^2" + AverageDiff);
 
-
-
-
-            int squadscrambledA = 0;
-            int squadscrambledB = 0;
+            Int32 squadscrambledA = 0;
+            Int32 squadscrambledB = 0;
             n = 0;
 
-            Dictionary<string, int> dicNewSquad = new Dictionary<string, int>();
+            Dictionary<String, Int32> dicNewSquad = new Dictionary<String, Int32>();
 
-            foreach (int SquadIDA in SquadsTeamA)
+            foreach (Int32 SquadIDA in SquadsTeamA)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDA].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDA].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -842,13 +813,13 @@ namespace PRoConEvents
 
             }
 
-            foreach (int SquadIDB in SquadsTeamB)
+            foreach (Int32 SquadIDB in SquadsTeamB)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDB].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDB].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -869,7 +840,7 @@ namespace PRoConEvents
             }
 
             n = 0;
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].playerSquad == 0)
                 {
@@ -893,10 +864,10 @@ namespace PRoConEvents
                 }
             }
 
-            string DebugSortedList = "";
+            String DebugSortedList = "";
             strTeam1 = "";
             strTeam2 = "";
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -913,7 +884,6 @@ namespace PRoConEvents
             DebugSortedList = "\n\nAfter Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugSortedList);
 
-
             this.dicSquadList.Clear();
             this.strFinalSquad = "";
             this.intSquadA = 0;
@@ -927,27 +897,27 @@ namespace PRoConEvents
         public void KeepClanMates()
         {
             //KEEP CLAN SQUADS START
-            string DebugScoreList = "";
-            string strTeam1 = "";
-            string strTeam2 = "";
+            String DebugScoreList = "";
+            String strTeam1 = "";
+            String strTeam2 = "";
 
-            int intTeamA = 0;
-            int intTeamB = 0;
-            int squadless = 0;
-            double squadvalue = 0;
-            int squadsize = 0;
-            int squadIDnew = 0;
-            List<string> KeepSquads = new List<string>();
-            List<string> squadTags = new List<string>();
+            Int32 intTeamA = 0;
+            Int32 intTeamB = 0;
+            Int32 squadless = 0;
+            Double squadvalue = 0;
+            Int32 squadsize = 0;
+            Int32 squadIDnew = 0;
+            List<String> KeepSquads = new List<String>();
+            List<String> squadTags = new List<String>();
 
-            List<int> PlayerTeamA = new List<int>();
-            List<int> PlayerTeamB = new List<int>();
-            List<int> SquadsTeamA = new List<int>();
-            List<int> SquadsTeamB = new List<int>();
-            List<int> squadplayers = new List<int>();
+            List<Int32> PlayerTeamA = new List<Int32>();
+            List<Int32> PlayerTeamB = new List<Int32>();
+            List<Int32> SquadsTeamA = new List<Int32>();
+            List<Int32> SquadsTeamB = new List<Int32>();
+            List<Int32> squadplayers = new List<Int32>();
 
-            List<int> toremoveKeys = new List<int>();
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            List<Int32> toremoveKeys = new List<Int32>();
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -973,22 +943,18 @@ namespace PRoConEvents
                 }
             }
 
-
-            foreach (int removeKey in toremoveKeys)
+            foreach (Int32 removeKey in toremoveKeys)
             {
                 this.dicPlayerScore.Remove(removeKey);
             }
 
-
             DebugScoreList = "Before Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugScoreList);
 
+            Boolean SWITCHsquad = false;
+            Boolean SWITCHplayer = false;
 
-
-            bool SWITCHsquad = false;
-            bool SWITCHplayer = false;
-
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvpCheck in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvpCheck in this.dicPlayerScore)
             {
                 squadTags.Clear();
 
@@ -1012,9 +978,9 @@ namespace PRoConEvents
                 {
                     squadvalue = this.dicPlayerScore[kvpCheck.Key].playerValue;
                     squadsize = 1;
-                    squadplayers = new List<int>();
+                    squadplayers = new List<Int32>();
                     squadplayers.Add(kvpCheck.Key);
-                    string CheckSquad = this.dicPlayerScore[kvpCheck.Key].teamID + "." + this.dicPlayerScore[kvpCheck.Key].playerSquad;
+                    String CheckSquad = this.dicPlayerScore[kvpCheck.Key].teamID + "." + this.dicPlayerScore[kvpCheck.Key].playerSquad;
 
                     if (this.dicPlayerScore[kvpCheck.Key].tag != "")
                     {
@@ -1023,22 +989,22 @@ namespace PRoConEvents
 
                     if (KeepSquads.Contains(CheckSquad) == false)
                     {
-                        bool deletesquad = true;
-                        foreach (KeyValuePair<int, CPlayerScoreInf> kvp2 in this.dicPlayerScore)
+                        Boolean deletesquad = true;
+                        foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp2 in this.dicPlayerScore)
                         {
                             if (kvpCheck.Key != kvp2.Key && this.dicPlayerScore[kvpCheck.Key].teamID == this.dicPlayerScore[kvp2.Key].teamID && this.dicPlayerScore[kvpCheck.Key].playerSquad == this.dicPlayerScore[kvp2.Key].playerSquad)
                             {
                                 squadvalue = squadvalue + this.dicPlayerScore[kvp2.Key].playerValue;
                                 squadsize++;
                                 squadplayers.Add(kvp2.Key);
-                                if (((((IList<string>)this.strAClantagWhitelistScrambler).Contains(this.dicPlayerScore[kvp2.Key].tag) && this.dicPlayerScore[kvp2.Key].tag != "") || (((IList<string>)this.strAClantagWhitelistScrambler).Contains(this.dicPlayerScore[kvpCheck.Key].tag) && this.dicPlayerScore[kvpCheck.Key].tag != "")) && !KeepSquads.Contains(CheckSquad))
+                                if (((((IList<String>)this.strAClantagWhitelistScrambler).Contains(this.dicPlayerScore[kvp2.Key].tag) && this.dicPlayerScore[kvp2.Key].tag != "") || (((IList<String>)this.strAClantagWhitelistScrambler).Contains(this.dicPlayerScore[kvpCheck.Key].tag) && this.dicPlayerScore[kvpCheck.Key].tag != "")) && !KeepSquads.Contains(CheckSquad))
                                 {
                                     KeepSquads.Add(this.dicPlayerScore[kvpCheck.Key].teamID + "." + this.dicPlayerScore[kvpCheck.Key].playerSquad);
                                     deletesquad = false;
                                     CSquadScoreInf newEntrySquad = new CSquadScoreInf(this.dicPlayerScore[kvpCheck.Key].teamID, this.dicPlayerScore[kvpCheck.Key].playerSquad, 0, 0, false);
                                     squadIDnew++;
                                     this.dicSquadScore.Add(squadIDnew, newEntrySquad);
-                                    DebugInfoSkill(string.Format("WL-Clantag detected, Clantag: ^b^2{0}^n^9 or Clantag: ^b^2{1}^n^9. Best Player: ^2{2}", this.dicPlayerScore[kvp2.Key].tag, this.dicPlayerScore[kvpCheck.Key].tag, this.dicPlayerScore[kvp2.Key].playerName));
+                                    DebugInfoSkill(String.Format("WL-Clantag detected, Clantag: ^b^2{0}^n^9 or Clantag: ^b^2{1}^n^9. Best Player: ^2{2}", this.dicPlayerScore[kvp2.Key].tag, this.dicPlayerScore[kvpCheck.Key].tag, this.dicPlayerScore[kvp2.Key].playerName));
                                     //BLEIBT BESTEHEN!
                                 }
                                 else if (squadTags.Contains(this.dicPlayerScore[kvp2.Key].tag) && this.dicPlayerScore[kvp2.Key].tag != "" && !KeepSquads.Contains(CheckSquad))
@@ -1049,7 +1015,7 @@ namespace PRoConEvents
                                     CSquadScoreInf newEntrySquad = new CSquadScoreInf(this.dicPlayerScore[kvpCheck.Key].teamID, this.dicPlayerScore[kvpCheck.Key].playerSquad, 0, 0, false);
                                     squadIDnew++;
                                     this.dicSquadScore.Add(squadIDnew, newEntrySquad);
-                                    DebugInfoSkill(string.Format("Clanmates detected, Clantag: ^b^2{0}^n^9. Best Player: ^2{1}", this.dicPlayerScore[kvp2.Key].tag, this.dicPlayerScore[kvpCheck.Key].playerName));
+                                    DebugInfoSkill(String.Format("Clanmates detected, Clantag: ^b^2{0}^n^9. Best Player: ^2{1}", this.dicPlayerScore[kvp2.Key].tag, this.dicPlayerScore[kvpCheck.Key].playerName));
                                     //BLEIBT BESTEHEN!
                                 }
                                 else if (!KeepSquads.Contains(CheckSquad) && this.dicPlayerScore[kvp2.Key].tag != "")
@@ -1098,18 +1064,17 @@ namespace PRoConEvents
                         }
                     }
 
-
                 }
 
             }
 
-            int teamsizedifference = PlayerTeamA.Count - PlayerTeamB.Count;
+            Int32 teamsizedifference = PlayerTeamA.Count - PlayerTeamB.Count;
 
             if (teamsizedifference >= 2)
             {
                 DebugInfoSkill("Before. ^bTeamSizeA: " + PlayerTeamA.Count + "^n --- TeamSizeB: " + PlayerTeamB.Count);
-                int fromsize = PlayerTeamA.Count - 1;
-                for (int j = fromsize; j >= 0; j--)
+                Int32 fromsize = PlayerTeamA.Count - 1;
+                for (Int32 j = fromsize; j >= 0; j--)
                 {
                     if (this.dicPlayerScore[PlayerTeamA[j]].playerSquad == 0 && (PlayerTeamA.Count - PlayerTeamB.Count) >= 2)
                     {
@@ -1131,8 +1096,8 @@ namespace PRoConEvents
             else if (teamsizedifference <= -2)
             {
                 DebugInfoSkill("Before. TeamSizeA: " + PlayerTeamA.Count + "^n --- ^bTeamSizeB: " + PlayerTeamB.Count);
-                int fromsize = PlayerTeamB.Count - 1;
-                for (int j = fromsize; j >= 0; j--)
+                Int32 fromsize = PlayerTeamB.Count - 1;
+                for (Int32 j = fromsize; j >= 0; j--)
                 {
                     if (this.dicPlayerScore[PlayerTeamB[j]].playerSquad == 0 && (PlayerTeamA.Count - PlayerTeamB.Count) <= -2)
                     {
@@ -1156,47 +1121,44 @@ namespace PRoConEvents
                 DebugInfoSkill("^2TeamSize A: " + PlayerTeamA.Count + "TeamSizeB: " + PlayerTeamB.Count);
             }
 
+            Double TeamValueA = 0;
+            Int32 TeamSizeA = PlayerTeamA.Count;
+            Double TeamValueB = 0;
+            Int32 TeamSizeB = PlayerTeamB.Count;
 
-
-            double TeamValueA = 0;
-            int TeamSizeA = PlayerTeamA.Count;
-            double TeamValueB = 0;
-            int TeamSizeB = PlayerTeamB.Count;
-
-            foreach (int PlayerIDa in PlayerTeamA)
+            foreach (Int32 PlayerIDa in PlayerTeamA)
             {
                 TeamValueA = TeamValueA + this.dicPlayerScore[PlayerIDa].playerValue;
             }
-            foreach (int PlayerIDb in PlayerTeamB)
+            foreach (Int32 PlayerIDb in PlayerTeamB)
             {
                 TeamValueB = TeamValueB + this.dicPlayerScore[PlayerIDb].playerValue;
             }
 
-            double AverageTeamA = TeamValueA / TeamSizeA;
-            double AverageTeamB = TeamValueB / TeamSizeB;
-            double AverageDiff = AverageTeamA - AverageTeamB;
+            Double AverageTeamA = TeamValueA / TeamSizeA;
+            Double AverageTeamB = TeamValueB / TeamSizeB;
+            Double AverageDiff = AverageTeamA - AverageTeamB;
 
             this.DebugInfoSkill("SortValue before adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference before adjustment: ^b^2" + AverageDiff);
 
-
-            bool adjusted = false;
+            Boolean adjusted = false;
             do
             {
                 adjusted = true;
-                double tempTeamValueA = 0;
-                double tempTeamValueB = 0;
-                double tempAverageTeamA = 0;
-                double tempAverageTeamB = 0;
-                double tempAverageDiff = 0;
-                double adjustvalue = AverageDiff;
-                int moveIDA = 0;
-                int moveIDB = 0;
+                Double tempTeamValueA = 0;
+                Double tempTeamValueB = 0;
+                Double tempAverageTeamA = 0;
+                Double tempAverageTeamB = 0;
+                Double tempAverageDiff = 0;
+                Double adjustvalue = AverageDiff;
+                Int32 moveIDA = 0;
+                Int32 moveIDB = 0;
 
-                foreach (int playerIDa in PlayerTeamA)
+                foreach (Int32 playerIDa in PlayerTeamA)
                 {
-                    foreach (int playerIDb in PlayerTeamB)
+                    foreach (Int32 playerIDb in PlayerTeamB)
                     {
                         if (adjustvalue > 0 && this.dicPlayerScore[playerIDa].playerValue > this.dicPlayerScore[playerIDb].playerValue
                             && this.dicPlayerScore[playerIDa].playerSquad == 0 && this.dicPlayerScore[playerIDb].playerSquad == 0)
@@ -1257,21 +1219,19 @@ namespace PRoConEvents
 
             } while (!adjusted);
 
-
             this.DebugInfoSkill("SortValue ^bafter^n PLAYER adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference ^bafter ^nPLAYER adjustment: ^b^2" + AverageDiff);
 
-
-            bool Sortiert;
+            Boolean Sortiert;
             do
             {
                 Sortiert = true;
-                for (int j = 0; j < (PlayerTeamA.Count - 1); j++)
+                for (Int32 j = 0; j < (PlayerTeamA.Count - 1); j++)
                 {
                     if (this.dicPlayerScore[PlayerTeamA[j]].playerValue < this.dicPlayerScore[PlayerTeamA[j + 1]].playerValue)
                     {
-                        int temp = PlayerTeamA[j];
+                        Int32 temp = PlayerTeamA[j];
                         PlayerTeamA[j] = PlayerTeamA[j + 1];
                         PlayerTeamA[j + 1] = temp;
                         Sortiert = false;
@@ -1282,11 +1242,11 @@ namespace PRoConEvents
             do
             {
                 Sortiert = true;
-                for (int j = 0; j < (PlayerTeamB.Count - 1); j++)
+                for (Int32 j = 0; j < (PlayerTeamB.Count - 1); j++)
                 {
                     if (this.dicPlayerScore[PlayerTeamB[j]].playerValue < this.dicPlayerScore[PlayerTeamB[j + 1]].playerValue)
                     {
-                        int temp = PlayerTeamB[j];
+                        Int32 temp = PlayerTeamB[j];
                         PlayerTeamB[j] = PlayerTeamB[j + 1];
                         PlayerTeamB[j + 1] = temp;
                         Sortiert = false;
@@ -1294,9 +1254,8 @@ namespace PRoConEvents
                 }
             } while (!Sortiert);
 
-
-            int count1 = 1;
-            foreach (int playerIDa in PlayerTeamA)
+            Int32 count1 = 1;
+            foreach (Int32 playerIDa in PlayerTeamA)
             {
                 if (this.dicPlayerScore[playerIDa].playerSquad == 0)
                 {
@@ -1325,9 +1284,8 @@ namespace PRoConEvents
                 }
             }
 
-
             count1 = 1;
-            foreach (int playerIDb in PlayerTeamB)
+            foreach (Int32 playerIDb in PlayerTeamB)
             {
                 if (this.dicPlayerScore[playerIDb].playerSquad == 0)
                 {
@@ -1356,25 +1314,23 @@ namespace PRoConEvents
                 }
             }
 
-
-
             adjusted = false;
-            bool squadadjust = false;
+            Boolean squadadjust = false;
             do
             {
                 adjusted = true;
-                double tempTeamValueA = 0;
-                double tempTeamValueB = 0;
-                double tempAverageTeamA = 0;
-                double tempAverageTeamB = 0;
-                double tempAverageDiff = 0;
-                double adjustvalue = AverageDiff;
-                int moveIDA = 0;
-                int moveIDB = 0;
+                Double tempTeamValueA = 0;
+                Double tempTeamValueB = 0;
+                Double tempAverageTeamA = 0;
+                Double tempAverageTeamB = 0;
+                Double tempAverageDiff = 0;
+                Double adjustvalue = AverageDiff;
+                Int32 moveIDA = 0;
+                Int32 moveIDB = 0;
 
-                foreach (int squadIDA in SquadsTeamA)
+                foreach (Int32 squadIDA in SquadsTeamA)
                 {
-                    foreach (int squadIDB in SquadsTeamB)
+                    foreach (Int32 squadIDB in SquadsTeamB)
                     {
                         if (adjustvalue > 0 && this.dicSquadScore[squadIDA].squadScore > this.dicSquadScore[squadIDB].squadScore && this.dicSquadScore[squadIDA].squadsize == this.dicSquadScore[squadIDB].squadsize)
                         {
@@ -1418,8 +1374,6 @@ namespace PRoConEvents
                     }
                 }
 
-
-
                 if (!adjusted)
                 {
                     squadadjust = true;
@@ -1449,20 +1403,18 @@ namespace PRoConEvents
                 this.DebugInfoSkill("Average Difference ^bafter ^nSQUAD adjustment: ^b^2" + AverageDiff);
             }
 
+            Int32 squadscrambledA = 0;
+            Int32 squadscrambledB = 0;
 
+            Dictionary<String, Int32> dicNewSquad = new Dictionary<String, Int32>();
 
-            int squadscrambledA = 0;
-            int squadscrambledB = 0;
-
-            Dictionary<string, int> dicNewSquad = new Dictionary<string, int>();
-
-            foreach (int SquadIDA in SquadsTeamA)
+            foreach (Int32 SquadIDA in SquadsTeamA)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDA].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDA].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -1482,13 +1434,13 @@ namespace PRoConEvents
 
             }
 
-            foreach (int SquadIDB in SquadsTeamB)
+            foreach (Int32 SquadIDB in SquadsTeamB)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDB].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDB].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -1508,10 +1460,10 @@ namespace PRoConEvents
 
             }
 
-            string DebugSortedList = "";
+            String DebugSortedList = "";
             strTeam1 = "";
             strTeam2 = "";
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -1528,7 +1480,6 @@ namespace PRoConEvents
             DebugSortedList = "\n\nAfter Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugSortedList);
 
-
             this.dicSquadList.Clear();
             this.strFinalSquad = "";
             this.intSquadA = 0;
@@ -1538,30 +1489,28 @@ namespace PRoConEvents
 
             // KEEP CLAN SQUADS END
 
-
         }
 
         public void KeepNoSquads()
         {
             //KEEP NO SQUADS START
-            string DebugScoreList = "";
-            string strTeam1 = "";
-            string strTeam2 = "";
+            String DebugScoreList = "";
+            String strTeam1 = "";
+            String strTeam2 = "";
 
-            int intTeamA = 0;
-            int intTeamB = 0;
-            int squadIDnew = 0;
-            List<string> KeepSquads = new List<string>();
-            List<string> squadTags = new List<string>();
+            Int32 intTeamA = 0;
+            Int32 intTeamB = 0;
+            Int32 squadIDnew = 0;
+            List<String> KeepSquads = new List<String>();
+            List<String> squadTags = new List<String>();
 
-            List<int> PlayerTeamA = new List<int>();
-            List<int> PlayerTeamB = new List<int>();
-            List<int> SquadsTeamA = new List<int>();
-            List<int> SquadsTeamB = new List<int>();
+            List<Int32> PlayerTeamA = new List<Int32>();
+            List<Int32> PlayerTeamB = new List<Int32>();
+            List<Int32> SquadsTeamA = new List<Int32>();
+            List<Int32> SquadsTeamB = new List<Int32>();
 
-
-            List<int> toremoveKeys = new List<int>();
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            List<Int32> toremoveKeys = new List<Int32>();
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -1573,7 +1522,6 @@ namespace PRoConEvents
                     strTeam2 = strTeam2 + "^1" + this.dicPlayerScore[kvp.Key].playerSquad + "^9.^0" + "[" + this.dicPlayerScore[kvp.Key].tag + "]^b" + this.dicPlayerScore[kvp.Key].playerName +
                     "^n^9: ^4" + this.dicPlayerScore[kvp.Key].playerValue + "^9 --- ";
                 }
-
 
                 if (this.dicPlayerCache.ContainsKey(this.dicPlayerScore[kvp.Key].playerName))
                 {
@@ -1588,8 +1536,7 @@ namespace PRoConEvents
                 }
             }
 
-
-            foreach (int removeKey in toremoveKeys)
+            foreach (Int32 removeKey in toremoveKeys)
             {
                 this.dicPlayerScore.Remove(removeKey);
             }
@@ -1597,12 +1544,9 @@ namespace PRoConEvents
             DebugScoreList = "Before Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugScoreList);
 
+            Boolean SWITCHplayer = false;
 
-
-
-            bool SWITCHplayer = false;
-
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvpCheck in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvpCheck in this.dicPlayerScore)
             {
                 if (!SWITCHplayer)
                 {
@@ -1621,47 +1565,46 @@ namespace PRoConEvents
 
             }
 
-            int teamsizedifference = PlayerTeamA.Count - PlayerTeamB.Count;
+            Int32 teamsizedifference = PlayerTeamA.Count - PlayerTeamB.Count;
 
-            double TeamValueA = 0;
-            int TeamSizeA = PlayerTeamA.Count;
-            double TeamValueB = 0;
-            int TeamSizeB = PlayerTeamB.Count;
+            Double TeamValueA = 0;
+            Int32 TeamSizeA = PlayerTeamA.Count;
+            Double TeamValueB = 0;
+            Int32 TeamSizeB = PlayerTeamB.Count;
 
-            foreach (int PlayerIDa in PlayerTeamA)
+            foreach (Int32 PlayerIDa in PlayerTeamA)
             {
                 TeamValueA = TeamValueA + this.dicPlayerScore[PlayerIDa].playerValue;
             }
-            foreach (int PlayerIDb in PlayerTeamB)
+            foreach (Int32 PlayerIDb in PlayerTeamB)
             {
                 TeamValueB = TeamValueB + this.dicPlayerScore[PlayerIDb].playerValue;
             }
 
-            double AverageTeamA = TeamValueA / TeamSizeA;
-            double AverageTeamB = TeamValueB / TeamSizeB;
-            double AverageDiff = AverageTeamA - AverageTeamB;
+            Double AverageTeamA = TeamValueA / TeamSizeA;
+            Double AverageTeamB = TeamValueB / TeamSizeB;
+            Double AverageDiff = AverageTeamA - AverageTeamB;
 
             this.DebugInfoSkill("SortValue before adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference before adjustment: ^b^2" + AverageDiff);
 
-
-            bool adjusted = false;
+            Boolean adjusted = false;
             do
             {
                 adjusted = true;
-                double tempTeamValueA = 0;
-                double tempTeamValueB = 0;
-                double tempAverageTeamA = 0;
-                double tempAverageTeamB = 0;
-                double tempAverageDiff = 0;
-                double adjustvalue = AverageDiff;
-                int moveIDA = 0;
-                int moveIDB = 0;
+                Double tempTeamValueA = 0;
+                Double tempTeamValueB = 0;
+                Double tempAverageTeamA = 0;
+                Double tempAverageTeamB = 0;
+                Double tempAverageDiff = 0;
+                Double adjustvalue = AverageDiff;
+                Int32 moveIDA = 0;
+                Int32 moveIDB = 0;
 
-                foreach (int playerIDa in PlayerTeamA)
+                foreach (Int32 playerIDa in PlayerTeamA)
                 {
-                    foreach (int playerIDb in PlayerTeamB)
+                    foreach (Int32 playerIDb in PlayerTeamB)
                     {
                         if (adjustvalue > 0 && this.dicPlayerScore[playerIDa].playerValue > this.dicPlayerScore[playerIDb].playerValue
                             && this.dicPlayerScore[playerIDa].playerSquad == 0 && this.dicPlayerScore[playerIDb].playerSquad == 0)
@@ -1722,13 +1665,12 @@ namespace PRoConEvents
 
             } while (!adjusted);
 
-
             this.DebugInfoSkill("SortValue ^bafter^n adjustment: ^bTeam 1: ^7" + TeamSizeA + "^9*^2" + AverageTeamA +
                 "^9^n --- ^bTeam 2: ^7" + TeamSizeB + "^9*^2" + AverageTeamB);
             this.DebugInfoSkill("Average Difference ^bafter ^nadjustment: ^b^2" + AverageDiff);
 
-            int count1 = 1;
-            foreach (int playerIDa in PlayerTeamA)
+            Int32 count1 = 1;
+            foreach (Int32 playerIDa in PlayerTeamA)
             {
                 if (this.dicPlayerScore[playerIDa].playerSquad == 0)
                 {
@@ -1757,9 +1699,8 @@ namespace PRoConEvents
                 }
             }
 
-
             count1 = 1;
-            foreach (int playerIDb in PlayerTeamB)
+            foreach (Int32 playerIDb in PlayerTeamB)
             {
                 if (this.dicPlayerScore[playerIDb].playerSquad == 0)
                 {
@@ -1788,20 +1729,19 @@ namespace PRoConEvents
                 }
             }
 
+            Int32 squadscrambledA = 0;
+            Int32 squadscrambledB = 0;
+            Int32 n = 0;
 
-            int squadscrambledA = 0;
-            int squadscrambledB = 0;
-            int n = 0;
+            Dictionary<String, Int32> dicNewSquad = new Dictionary<String, Int32>();
 
-            Dictionary<string, int> dicNewSquad = new Dictionary<string, int>();
-
-            foreach (int SquadIDA in SquadsTeamA)
+            foreach (Int32 SquadIDA in SquadsTeamA)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDA].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDA].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDA].teamID + "." + this.dicSquadScore[SquadIDA].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -1821,13 +1761,13 @@ namespace PRoConEvents
 
             }
 
-            foreach (int SquadIDB in SquadsTeamB)
+            foreach (Int32 SquadIDB in SquadsTeamB)
             {
-                foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                 {
                     if (this.dicPlayerScore[kvp.Key].teamID == this.dicSquadScore[SquadIDB].teamID && this.dicPlayerScore[kvp.Key].playerSquad == this.dicSquadScore[SquadIDB].squadID && !this.dicPlayerScore[kvp.Key].balanced)
                     {
-                        string strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
+                        String strTeamSquad = this.dicSquadScore[SquadIDB].teamID + "." + this.dicSquadScore[SquadIDB].squadID;
 
                         if (dicNewSquad.ContainsKey(strTeamSquad))
                         {
@@ -1847,9 +1787,8 @@ namespace PRoConEvents
 
             }
 
-
             n = 0;
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].playerSquad == 0)
                 {
@@ -1873,10 +1812,10 @@ namespace PRoConEvents
                 }
             }
 
-            string DebugSortedList = "";
+            String DebugSortedList = "";
             strTeam1 = "";
             strTeam2 = "";
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].teamID == 1)
                 {
@@ -1893,7 +1832,6 @@ namespace PRoConEvents
             DebugSortedList = "\n\nAfter Scramble:\nTeam 1: " + strTeam1 + "\n\nTeam 2: " + strTeam2;
             this.DebugInfoSkill(DebugSortedList);
 
-
             this.dicSquadList.Clear();
             this.strFinalSquad = "";
             this.intSquadA = 0;
@@ -1904,14 +1842,12 @@ namespace PRoConEvents
             // KEEP NO SQUADS END
         }
 
-        public double TBValue(double TBrank, double TBskill, double TBspm, double TBspmcombat, double TBkdr)
+        public Double TBValue(Double TBrank, Double TBskill, Double TBspm, Double TBspmcombat, Double TBkdr)
         {
-            double _TBValue = TBrank * 5 + TBskill * 4 + TBspm + TBspmcombat * 8 + TBkdr * 500;
+            Double _TBValue = TBrank * 5 + TBskill * 4 + TBspm + TBspmcombat * 8 + TBkdr * 500;
 
             return _TBValue;
         }
-
-
 
         #endregion
     }

@@ -1,15 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -25,28 +17,28 @@ namespace PRoConEvents
     {
         #region PluginSetup
 
-        public string GetPluginName()
+        public String GetPluginName()
         {
             return "TrueBalancer";
         }
 
-        public string GetPluginVersion()
+        public String GetPluginVersion()
         {
             return "0.5.3.0";
         }
 
-        public string GetPluginAuthor()
+        public String GetPluginAuthor()
         {
             return "onegrizzlybeer, versions < 0.5 by Panther (maintained by Prophet731)";
         }
 
-        public string GetPluginWebsite()
+        public String GetPluginWebsite()
         {
             return "forum.myrcon.com/showthread.php?7169-TrueBalancer-0-5-0-0";
         }
 
         // A note to plugin authors: DO NOT change how a tag works, instead make a whole new tag.
-        public string GetPluginDescription()
+        public String GetPluginDescription()
         {
             return @"<p> ... and contributors from the Procon community.</p>
 <p>If you like my plugin, please feel free to donate</p>
@@ -59,7 +51,6 @@ namespace PRoConEvents
 </form>
 
 </form>
-
 
 </blockquote>
 <br><br>
@@ -247,7 +238,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
 ";
         }
 
-        public void OnPluginLoaded(string strHostName, string strPort, string strPRoConVersion)
+        public void OnPluginLoaded(String strHostName, String strPort, String strPRoConVersion)
         {
             this.boolRunOnList = false;
             this.boolLevelLoaded = true;
@@ -659,7 +650,6 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
             lstReturn.Add(new CPluginVariable("PRoCon - Scramble Teams on Roundend?", this.ynbScrambleRoundViaPRoCon.GetType(), this.ynbScrambleRoundViaPRoCon));
             lstReturn.Add(new CPluginVariable("PRoCon - Scramble Teams on Roundend? Are you sure?", this.ynbScrambleRoundViaPRoConConf.GetType(), this.ynbScrambleRoundViaPRoConConf));
 
-
             lstReturn.Add(new CPluginVariable("How many warnings?", this.intWarnings.GetType(), this.intWarnings));
             lstReturn.Add(new CPluginVariable("Time between Warnings in sec", this.intInterval.GetType(), this.intInterval));
 
@@ -722,7 +712,6 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
             lstReturn.Add(new CPluginVariable("Yell scramble message at roundend?", typeof(enumBoolYesNo), this.ynbYellScrambleMessage));
             lstReturn.Add(new CPluginVariable("What to do with squads?", "enum.SquadMode(Keep all Squads|Keep squads with two or more clanmates|Keep no squads)", this.strScrambleMode));
             lstReturn.Add(new CPluginVariable("ClanTag-List: Keep squad, if at least one player uses one of these ClanTags", this.strAClantagWhitelistScrambler.GetType(), this.strAClantagWhitelistScrambler));
-
 
             lstReturn.Add(new CPluginVariable("RUSH-Scramble teams on every new map?", typeof(enumBoolYesNo), this.ynbenableSkillRUSH));
             lstReturn.Add(new CPluginVariable("RUSH-Scramble by", "enum.ScrambleBy(TB-Value|Rank|Skill|SPM|SPMcombat|K/D)", this.ScrambleByRUSH));
@@ -807,7 +796,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
         // by the user can put any kind of data it wants in strValue.
         // use type.TryParse
 
-        public void SetPluginVariable(string strVariable, string strValue)
+        public void SetPluginVariable(String strVariable, String strValue)
         {
             if (strVariable.CompareTo("Servertype") == 0)
             {
@@ -816,7 +805,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
 
             if (strVariable == "Maximum number of players to fetch at each interval")
             {
-                int numPlayers = 1;
+                Int32 numPlayers = 1;
                 Int32.TryParse(strValue, out numPlayers);
                 if (numPlayers < 0 || numPlayers > 3)
                 {
@@ -1001,7 +990,6 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                 this.intminScoreRUSH = Convert.ToInt32(strValue);
 
             }
-
 
             else if (strVariable.CompareTo("GM/CTF-Player Threshold") == 0 && Int32.TryParse(strValue, out this.intTreshGM) == true)
             {
@@ -1252,7 +1240,6 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                 this.strBeenMoved = strValue;
             }
 
-
             else if (strVariable.CompareTo("Enable Command: !scrambleround") == 0 && Enum.IsDefined(typeof(enumBoolYesNo), strValue) == true)
             {
                 this.ynbEnableScrambleRound = (enumBoolYesNo)Enum.Parse(typeof(enumBoolYesNo), strValue);
@@ -1470,7 +1457,6 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                 this.ScrambleByTDM = strValue;
             }
 
-
             else if (strVariable.CompareTo("Enable Debug Mode for normal balancing") == 0 && Enum.IsDefined(typeof(enumBoolYesNo), strValue) == true)
             {
                 this.ynbDebugMode = (enumBoolYesNo)Enum.Parse(typeof(enumBoolYesNo), strValue);
@@ -1519,7 +1505,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
         private void UnregisterAllCommands()
         {
 
-            List<string> emptyList = new List<string>();
+            List<String> emptyList = new List<String>();
 
             this.UnregisterCommand(
                 new MatchCommand(
@@ -1560,13 +1546,13 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
 
             if (this.m_isPluginEnabled == true)
             {
-                MatchCommand confirmationCommand = new MatchCommand(this.Listify<string>("@", "!", "#"), "yes", this.Listify<MatchArgumentFormat>());
+                MatchCommand confirmationCommand = new MatchCommand(this.Listify<String>("@", "!", "#"), "yes", this.Listify<MatchArgumentFormat>());
 
                 this.RegisterCommand(
                     new MatchCommand(
                         "TrueBalancer",
                         "OnCommandScrambleNow",
-                        this.Listify<string>("@", "!", "#"),
+                        this.Listify<String>("@", "!", "#"),
                         "scramblenow",
                         this.Listify<MatchArgumentFormat>(),
                         new ExecutionRequirements(
@@ -1583,7 +1569,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                     new MatchCommand(
                         "TrueBalancer",
                         "OnCommandScrambleRound",
-                        this.Listify<string>("@", "!", "#"),
+                        this.Listify<String>("@", "!", "#"),
                         "scrambleround",
                         this.Listify<MatchArgumentFormat>(),
                         new ExecutionRequirements(
@@ -1600,7 +1586,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                         new MatchCommand(
                             "TrueBalancer",
                             "OnCommandTBMove",
-                            this.Listify<string>("@", "!", "#"),
+                            this.Listify<String>("@", "!", "#"),
                             "tb-move",
                             this.Listify<MatchArgumentFormat>(
                                 new MatchArgumentFormat(
@@ -1622,7 +1608,7 @@ If you have any Idears for the autobalancer contact me on the Procon - Forums. I
                         new MatchCommand(
                             "TrueBalancer",
                             "OnCommandTBForceMove",
-                            this.Listify<string>("@", "!", "#"),
+                            this.Listify<String>("@", "!", "#"),
                             "tb-fmove",
                             this.Listify<MatchArgumentFormat>(
                                 new MatchArgumentFormat(

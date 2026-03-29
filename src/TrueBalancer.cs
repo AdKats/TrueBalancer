@@ -34,17 +34,7 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Web;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -61,11 +51,11 @@ namespace PRoConEvents
         #region Variables and Constructors
 
         //Proconvariables
-        private string m_strHostName;
-        private string m_strPort;
-        private string m_strPRoConVersion;
+        private String m_strHostName;
+        private String m_strPort;
+        private String m_strPRoConVersion;
 
-        private string Servertype;
+        private String Servertype;
 
         private DateTime lastupdatecheck = DateTime.Now.AddHours(-4);
 
@@ -73,116 +63,116 @@ namespace PRoConEvents
 
         BattlelogClient bclient;
 
-        private Dictionary<string, CPlayerJoinInf> dicPlayerCache = new Dictionary<string, CPlayerJoinInf>();
-        private Dictionary<int, CPlayerScoreInf> dicPlayerScore = new Dictionary<int, CPlayerScoreInf>();
-        private Dictionary<int, CSquadScoreInf> dicSquadScore = new Dictionary<int, CSquadScoreInf>();
-        private Dictionary<string, int> dicSquadList = new Dictionary<string, int>();
-        private Dictionary<string, bool> OnCommandMove = new Dictionary<string, bool>();
-        private List<string> OnCommandMoveDone;
+        private Dictionary<String, CPlayerJoinInf> dicPlayerCache = new Dictionary<String, CPlayerJoinInf>();
+        private Dictionary<Int32, CPlayerScoreInf> dicPlayerScore = new Dictionary<Int32, CPlayerScoreInf>();
+        private Dictionary<Int32, CSquadScoreInf> dicSquadScore = new Dictionary<Int32, CSquadScoreInf>();
+        private Dictionary<String, Int32> dicSquadList = new Dictionary<String, Int32>();
+        private Dictionary<String, Boolean> OnCommandMove = new Dictionary<String, Boolean>();
+        private List<String> OnCommandMoveDone;
 
-        private string[] strAWhitelist;
-        private string[] strAClantagWhitelist;
-        private string[] strAClantagWhitelistScrambler;
-        private string[] strAWhitelistComplete;
-        private List<string> teamswitcher;
-        private List<string> BalancedPlayers;
+        private String[] strAWhitelist;
+        private String[] strAClantagWhitelist;
+        private String[] strAClantagWhitelistScrambler;
+        private String[] strAWhitelistComplete;
+        private List<String> teamswitcher;
+        private List<String> BalancedPlayers;
         //private List<string> PlayersOnServer;
-        private string strWarning;
-        private string strLastWarning;
-        private string strBeenMoved;
-        private string strMovedPlayer;
-        private string strJoinedPlayerName;
-        private string strShameMessage;
+        private String strWarning;
+        private String strLastWarning;
+        private String strBeenMoved;
+        private String strMovedPlayer;
+        private String strJoinedPlayerName;
+        private String strShameMessage;
 
-        private string strScrambleDoneMsg;
-        private string strScrambleNowMsg;
-        private string strScrambleRoundMsg;
+        private String strScrambleDoneMsg;
+        private String strScrambleNowMsg;
+        private String strScrambleRoundMsg;
 
-        private string strFinalSquad;
-        private string strErrorMsg;
-        private string strdeadplayer;
+        private String strFinalSquad;
+        private String strErrorMsg;
+        private String strdeadplayer;
 
-        private int intInterval;
-        private int intWarnings;
-        private int intTimerWait;
-        private int intI;
+        private Int32 intInterval;
+        private Int32 intWarnings;
+        private Int32 intTimerWait;
+        private Int32 intI;
 
-        private int TeamA;
-        private int TeamB;
-        private int intPlayerDif;
-        private int intToTeam;
-        private int intFromTeam;
-        private int intNewTeam;
-        private int intcountWarnings;
-        private int intWaitSeconds;
-        private int intScoreTeamA;
-        private int intScoreTeamB;
-        private int intTicketcount;
+        private Int32 TeamA;
+        private Int32 TeamB;
+        private Int32 intPlayerDif;
+        private Int32 intToTeam;
+        private Int32 intFromTeam;
+        private Int32 intNewTeam;
+        private Int32 intcountWarnings;
+        private Int32 intWaitSeconds;
+        private Int32 intScoreTeamA;
+        private Int32 intScoreTeamB;
+        private Int32 intTicketcount;
 
-        private int bestSquadTeamID;
-        private int intTicketsdif;
-        private int intCurrentRoundCount;
-        private int intMaxSlots;
-        private int intScrambledPlayers;
-        private int intSquadA;
-        private int intSquadB;
-        private int intScrambleCount;
-        private int intPlayerCache;
-        private double dblValueDiffRUSH;
-        private double dblValueDiffCONQUEST;
-        private double dblValueDiffDOM;
-        private double dblValueDiffTDM;
-        private double dblValueDiffGM;
-        private int intScoreWTS;
+        private Int32 bestSquadTeamID;
+        private Int32 intTicketsdif;
+        private Int32 intCurrentRoundCount;
+        private Int32 intMaxSlots;
+        private Int32 intScrambledPlayers;
+        private Int32 intSquadA;
+        private Int32 intSquadB;
+        private Int32 intScrambleCount;
+        private Int32 intPlayerCache;
+        private Double dblValueDiffRUSH;
+        private Double dblValueDiffCONQUEST;
+        private Double dblValueDiffDOM;
+        private Double dblValueDiffTDM;
+        private Double dblValueDiffGM;
+        private Int32 intScoreWTS;
 
-        private int intAllowDif;
-        private int intminScore;
+        private Int32 intAllowDif;
+        private Int32 intminScore;
 
-        private int intminScoreRUSH;
-        private int intTreshRUSH;
-        private int intAllowDif1RUSH;
-        private int intAllowDif2RUSH;
+        private Int32 intminScoreRUSH;
+        private Int32 intTreshRUSH;
+        private Int32 intAllowDif1RUSH;
+        private Int32 intAllowDif2RUSH;
 
-        private int intTreshGM;
-        private int intAllowDif1GM;
-        private int intAllowDif2GM;
+        private Int32 intTreshGM;
+        private Int32 intAllowDif1GM;
+        private Int32 intAllowDif2GM;
 
-        private int intTreshDF;
-        private int intAllowDif1DF;
-        private int intAllowDif2DF;
+        private Int32 intTreshDF;
+        private Int32 intAllowDif1DF;
+        private Int32 intAllowDif2DF;
 
-        private int intminScoreCONQUEST;
-        private int intTreshCONQUEST;
-        private int intAllowDif1CONQUEST;
-        private int intAllowDif2CONQUEST;
+        private Int32 intminScoreCONQUEST;
+        private Int32 intTreshCONQUEST;
+        private Int32 intAllowDif1CONQUEST;
+        private Int32 intAllowDif2CONQUEST;
 
-        private int intminScoreDOM;
-        private int intTreshDOM;
-        private int intAllowDif1DOM;
-        private int intAllowDif2DOM;
+        private Int32 intminScoreDOM;
+        private Int32 intTreshDOM;
+        private Int32 intAllowDif1DOM;
+        private Int32 intAllowDif2DOM;
 
-        private int intminScoreOB;
-        private int intTreshOB;
-        private int intAllowDif1OB;
-        private int intAllowDif2OB;
+        private Int32 intminScoreOB;
+        private Int32 intTreshOB;
+        private Int32 intAllowDif1OB;
+        private Int32 intAllowDif2OB;
 
-        private int intminScoreTDM;
-        private int intTreshTDM;
-        private int intAllowDif1TDM;
-        private int intAllowDif2TDM;
+        private Int32 intminScoreTDM;
+        private Int32 intTreshTDM;
+        private Int32 intAllowDif1TDM;
+        private Int32 intAllowDif2TDM;
 
-        private double rankA;
-        private double rankB;
-        private double skillA;
-        private double skillB;
-        private double spmA;
-        private double spmB;
-        private double spmcombatA;
-        private double spmcombatB;
-        private double kdrA;
-        private double kdrB;
-        private double TBvalueA;
-        private double TBvalueB;
+        private Double rankA;
+        private Double rankB;
+        private Double skillA;
+        private Double skillB;
+        private Double spmA;
+        private Double spmB;
+        private Double spmcombatA;
+        private Double spmcombatB;
+        private Double kdrA;
+        private Double kdrB;
+        private Double TBvalueA;
+        private Double TBvalueB;
 
         private enumBoolYesNo ynbDebugMode;
         private enumBoolYesNo ynbDebugModeSkill;
@@ -204,33 +194,33 @@ namespace PRoConEvents
         private enumBoolYesNo ynbScrambleRoundViaPRoCon;
         private enumBoolYesNo ynbScrambleRoundViaPRoConConf;
 
-        private string strScrambleMode;
+        private String strScrambleMode;
 
         private enumBoolYesNo ynbenableSkillRUSH;
         private enumBoolYesNo ynbScrambleMapRUSH;
-        private string ScrambleByRUSH;
+        private String ScrambleByRUSH;
 
         private enumBoolYesNo ynbenableSkillGM;
         private enumBoolYesNo ynbScrambleMapGM;
-        private string ScrambleByGM;
+        private String ScrambleByGM;
 
         private enumBoolYesNo ynbenableSkillDF;
         private enumBoolYesNo ynbScrambleMapDF;
-        private string ScrambleByDF;
+        private String ScrambleByDF;
 
         private enumBoolYesNo ynbenableSkillCONQUEST;
         private enumBoolYesNo ynbScrambleMapCONQUEST;
         private enumBoolYesNo ynbScrambleEveryRoundCONQUEST;
-        private int intwonTicketsCONQUEST;
-        private string strScrambleMessageCONQUEST;
-        private string ScrambleByCONQUEST;
+        private Int32 intwonTicketsCONQUEST;
+        private String strScrambleMessageCONQUEST;
+        private String ScrambleByCONQUEST;
 
         private enumBoolYesNo ynbenableSkillDOM;
         private enumBoolYesNo ynbScrambleMapDOM;
         private enumBoolYesNo ynbScrambleEveryRoundDOM;
-        private int intwonTicketsDOM;
-        private string strScrambleMessageDOM;
-        private string ScrambleByDOM;
+        private Int32 intwonTicketsDOM;
+        private String strScrambleMessageDOM;
+        private String ScrambleByDOM;
 
         //private enumBoolYesNo ynbenableSkillOB;
         //private enumBoolYesNo ynbScrambleMapOB;
@@ -239,49 +229,49 @@ namespace PRoConEvents
         private enumBoolYesNo ynbenableSkillOB;
         private enumBoolYesNo ynbScrambleMapOB;
         private enumBoolYesNo ynbScrambleEveryRoundOB;
-        private int intwonTicketsOB;
-        private string strScrambleMessageOB;
-        private string ScrambleByOB;
+        private Int32 intwonTicketsOB;
+        private String strScrambleMessageOB;
+        private String ScrambleByOB;
 
         private enumBoolYesNo ynbenableSkillTDM;
         private enumBoolYesNo ynbScrambleMapTDM;
         private enumBoolYesNo ynbScrambleEveryRoundTDM;
-        private int intwonTicketsTDM;
-        private int intshowTicketsTDM;
-        private string strScrambleMessageTDM;
-        private string ScrambleByTDM;
+        private Int32 intwonTicketsTDM;
+        private Int32 intshowTicketsTDM;
+        private String strScrambleMessageTDM;
+        private String ScrambleByTDM;
 
-        private bool m_isPluginEnabled;
-        private bool boolplayerexists;
-        private bool boolneedbalance;
-        private bool booltimer;
-        private bool boolstartBalance;
-        private bool boolFirstOP;
-        private bool boolLevelStart;
-        private bool boolLevelLoaded;
-        private bool boolRoundOver;
-        private bool boolgametype;
-        private bool boolafterBalance;
-        private bool boolfirstwarningWL;
-        private bool boolmanuellchange;
-        private bool boolnoplayer;
-        private bool boolscrambleActive;
-        private bool boolscrambleNow;
-        private bool boolTeamsScrambled;
-        private bool boolRunOnList;
-        private bool boolplayerleft;
-        private bool boolticketdif;
-        private bool boolwaitfordeath;
-        private bool boolwaitdead;
-        private bool boolfirstscrambler;
-        private bool boolscramblefailed;
-        private bool boolmessagesent;
-        private bool backswitcher;
-        private bool boolbalanced;
-        private bool boolscramblebyadminroundend;
-        private bool showfirstmove;
+        private Boolean m_isPluginEnabled;
+        private Boolean boolplayerexists;
+        private Boolean boolneedbalance;
+        private Boolean booltimer;
+        private Boolean boolstartBalance;
+        private Boolean boolFirstOP;
+        private Boolean boolLevelStart;
+        private Boolean boolLevelLoaded;
+        private Boolean boolRoundOver;
+        private Boolean boolgametype;
+        private Boolean boolafterBalance;
+        private Boolean boolfirstwarningWL;
+        private Boolean boolmanuellchange;
+        private Boolean boolnoplayer;
+        private Boolean boolscrambleActive;
+        private Boolean boolscrambleNow;
+        private Boolean boolTeamsScrambled;
+        private Boolean boolRunOnList;
+        private Boolean boolplayerleft;
+        private Boolean boolticketdif;
+        private Boolean boolwaitfordeath;
+        private Boolean boolwaitdead;
+        private Boolean boolfirstscrambler;
+        private Boolean boolscramblefailed;
+        private Boolean boolmessagesent;
+        private Boolean backswitcher;
+        private Boolean boolbalanced;
+        private Boolean boolscramblebyadminroundend;
+        private Boolean showfirstmove;
 
-        private string strcurrentGametype;
+        private String strcurrentGametype;
         private TimeSpan TSWait;
         private DateTime DTScramblestarted;
 
@@ -300,9 +290,9 @@ namespace PRoConEvents
         // private bool boolOnLogin;        
         //private DateTime DTRoundOver;        
 
-        private bool boolVirtual;
+        private Boolean boolVirtual;
         private enumBoolYesNo ynbVirtualMode;
-        private int intMaxPlayersToFetch;
+        private Int32 intMaxPlayersToFetch;
 
         private enumBoolYesNo showMoves;
         private enumBoolYesNo Check4Update;
@@ -314,24 +304,24 @@ namespace PRoConEvents
 
             this.bclient = new BattlelogClient(this);
 
-            this.dicPlayerCache = new Dictionary<string, CPlayerJoinInf>();
-            this.dicPlayerScore = new Dictionary<int, CPlayerScoreInf>();
-            this.dicSquadScore = new Dictionary<int, CSquadScoreInf>();
-            this.dicSquadList = new Dictionary<string, int>();
-            this.OnCommandMove = new Dictionary<string, bool>();
-            this.OnCommandMoveDone = new List<string>();
+            this.dicPlayerCache = new Dictionary<String, CPlayerJoinInf>();
+            this.dicPlayerScore = new Dictionary<Int32, CPlayerScoreInf>();
+            this.dicSquadScore = new Dictionary<Int32, CSquadScoreInf>();
+            this.dicSquadList = new Dictionary<String, Int32>();
+            this.OnCommandMove = new Dictionary<String, Boolean>();
+            this.OnCommandMoveDone = new List<String>();
 
             this.Servertype = "AUTOMATIC";
 
             //this.strAWhitelist = new string[] { "HRPanter", "Name two", "Name three" };
             //this.strAClantagWhitelist = new string[] { "FoC", "ClanTag2", "ClanTag3" };
             //this.strAClantagWhitelistScrambler = new string[] { "FoC", "FoCr", "ClanTag3" }; ;
-            this.strAWhitelist = new string[] { "HRPanter" };
-            this.strAClantagWhitelist = new string[] { "FoC" };
-            this.strAClantagWhitelistScrambler = new string[] { "FoC", "FoCr" }; ;
-            this.strAWhitelistComplete = new string[] { };
-            this.teamswitcher = new List<string>();
-            this.BalancedPlayers = new List<string>();
+            this.strAWhitelist = new String[] { "HRPanter" };
+            this.strAClantagWhitelist = new String[] { "FoC" };
+            this.strAClantagWhitelistScrambler = new String[] { "FoC", "FoCr" }; ;
+            this.strAWhitelistComplete = new String[] { };
+            this.teamswitcher = new List<String>();
+            this.BalancedPlayers = new List<String>();
 
             //this.PlayersOnServer = new List<string>(new string[] {"Z1", "Z2", "HRPanter"}); //panter
             this.strWarning = "EVEN TEAMS! Autobalancing teams shortly.";
@@ -539,7 +529,6 @@ namespace PRoConEvents
             this.strScrambleMessageTDM = "SCRAMBLING teams next round. Ticketdifference too big. Squads will be kept together.";
             this.ScrambleByTDM = "TB-Value";
 
-
             this.TSForceMove = new TimeSpan(0);
             this.DTForceMove = new DateTime();
 
@@ -554,7 +543,6 @@ namespace PRoConEvents
             Check4Update = enumBoolYesNo.Yes;
         }
 
-
         #endregion
     }
 
@@ -562,39 +550,39 @@ namespace PRoConEvents
 
     class CPlayerJoinInf
     {
-        private int _teamID = 0;
-        private int _playerWL = 0;
-        private int _playerSquad = 0;
+        private Int32 _teamID = 0;
+        private Int32 _playerWL = 0;
+        private Int32 _playerSquad = 0;
         private DateTime _Playerjoined;
-        private int _score = 0;
-        private bool _tobebalanced = false;
-        private double _rank = 0;
-        private double _skill = 0;
-        private double _spm = 0;
-        private double _spmcombat = 0;
-        private double _kdr = 0;
-        private double _TBvalue = 0;
-        private double _playerValue = 0;
-        private string _tag = "";
+        private Int32 _score = 0;
+        private Boolean _tobebalanced = false;
+        private Double _rank = 0;
+        private Double _skill = 0;
+        private Double _spm = 0;
+        private Double _spmcombat = 0;
+        private Double _kdr = 0;
+        private Double _TBvalue = 0;
+        private Double _playerValue = 0;
+        private String _tag = "";
 
-        public bool statsFetched = false;
+        public Boolean statsFetched = false;
 
-        private bool _IsCommander = false;
-        private bool _IsSpectator = false;
+        private Boolean _IsCommander = false;
+        private Boolean _IsSpectator = false;
 
-        public int teamID
+        public Int32 teamID
         {
             get { return _teamID; }
             set { _teamID = value; }
         }
 
-        public int playerWL
+        public Int32 playerWL
         {
             get { return _playerWL; }
             set { _playerWL = value; }
         }
 
-        public int playerSquad
+        public Int32 playerSquad
         {
             get { return _playerSquad; }
             set { _playerSquad = value; }
@@ -606,79 +594,79 @@ namespace PRoConEvents
             set { _Playerjoined = value; }
         }
 
-        public int score
+        public Int32 score
         {
             get { return _score; }
             set { _score = value; }
         }
 
-        public bool tobebalanced
+        public Boolean tobebalanced
         {
             get { return _tobebalanced; }
             set { _tobebalanced = value; }
         }
 
-        public double rank
+        public Double rank
         {
             get { return _rank; }
             set { _rank = value; }
         }
 
-        public double TBvalue
+        public Double TBvalue
         {
             get { return _TBvalue; }
             set { _TBvalue = value; }
         }
 
-        public double skill
+        public Double skill
         {
             get { return _skill; }
             set { _skill = value; }
         }
 
-        public double spm
+        public Double spm
         {
             get { return _spm; }
             set { _spm = value; }
         }
 
-        public double spmcombat
+        public Double spmcombat
         {
             get { return _spmcombat; }
             set { _spmcombat = value; }
         }
 
-        public double kdr
+        public Double kdr
         {
             get { return _kdr; }
             set { _kdr = value; }
         }
 
-        public double playerValue
+        public Double playerValue
         {
             get { return _playerValue; }
             set { _playerValue = value; }
         }
 
-        public string tag
+        public String tag
         {
             get { return _tag; }
             set { _tag = value; }
         }
 
-        public bool IsCommander
+        public Boolean IsCommander
         {
             get { return _IsCommander; }
             set { _IsCommander = value; }
         }
 
-        public bool IsSpectator
+        public Boolean IsSpectator
         {
             get { return _IsSpectator; }
             set { _IsSpectator = value; }
         }
 
-        public CPlayerJoinInf(int teamID, int playerWL, int playerSquad, DateTime Playerjoined, int score, double rank, double skill, double spm, double spmcombat, double kdr, double TBvalue, double playerValue, string tag, bool tobebalanced, bool commander, bool spectator)
+        public CPlayerJoinInf(Int32 teamID, Int32 playerWL, Int32 playerSquad, DateTime Playerjoined, Int32 score, Double rank, Double skill, Double spm, Double spmcombat, Double kdr, Double TBvalue, Double playerValue, String tag, Boolean tobebalanced, Boolean commander, Boolean spectator)
         {
             _TBvalue = TBvalue;
             _teamID = teamID;
@@ -701,55 +689,55 @@ namespace PRoConEvents
 
     class CPlayerScoreInf
     {
-        private string _playerName = "";
-        private int _teamID = 0;
-        private int _playerSquad = 0;
-        private double _playerValue = 0;
-        private bool _balanced = false;
-        private bool _scrambled = false;
-        private string _tag = String.Empty;
+        private String _playerName = "";
+        private Int32 _teamID = 0;
+        private Int32 _playerSquad = 0;
+        private Double _playerValue = 0;
+        private Boolean _balanced = false;
+        private Boolean _scrambled = false;
+        private String _tag = String.Empty;
 
-        public string tag
+        public String tag
         {
             get { return _tag; }
             set { _tag = value; }
         }
 
-        public int teamID
+        public Int32 teamID
         {
             get { return _teamID; }
             set { _teamID = value; }
         }
 
-        public int playerSquad
+        public Int32 playerSquad
         {
             get { return _playerSquad; }
             set { _playerSquad = value; }
         }
 
-        public double playerValue
+        public Double playerValue
         {
             get { return _playerValue; }
             set { _playerValue = value; }
         }
-        public string playerName
+        public String playerName
         {
             get { return _playerName; }
             set { _playerName = value; }
         }
 
-        public bool balanced
+        public Boolean balanced
         {
             get { return _balanced; }
             set { _balanced = value; }
         }
-        public bool scrambled
+        public Boolean scrambled
         {
             get { return _scrambled; }
             set { _scrambled = value; }
         }
 
-        public CPlayerScoreInf(string playerName, int teamID, int playerSquad, double playerValue, bool balanced, bool scrambled, string tag)
+        public CPlayerScoreInf(String playerName, Int32 teamID, Int32 playerSquad, Double playerValue, Boolean balanced, Boolean scrambled, String tag)
         {
             _tag = tag;
             _playerName = playerName;
@@ -764,43 +752,43 @@ namespace PRoConEvents
 
     class CSquadScoreInf
     {
-        private int _teamID = 0;
-        private int _squadID = 0;
-        private double _squadScore = 0;
-        private int _squadsize = 0;
-        private bool _assigned = false;
+        private Int32 _teamID = 0;
+        private Int32 _squadID = 0;
+        private Double _squadScore = 0;
+        private Int32 _squadsize = 0;
+        private Boolean _assigned = false;
 
-        public bool assigned
+        public Boolean assigned
         {
             get { return _assigned; }
             set { _assigned = value; }
         }
 
-        public int teamID
+        public Int32 teamID
         {
             get { return _teamID; }
             set { _teamID = value; }
         }
 
-        public int squadsize
+        public Int32 squadsize
         {
             get { return _squadsize; }
             set { _squadsize = value; }
         }
 
-        public int squadID
+        public Int32 squadID
         {
             get { return _squadID; }
             set { _squadID = value; }
         }
 
-        public double squadScore
+        public Double squadScore
         {
             get { return _squadScore; }
             set { _squadScore = value; }
         }
 
-        public CSquadScoreInf(int teamID, int squadID, int squadsize, double squadScore, bool assigned)
+        public CSquadScoreInf(Int32 teamID, Int32 squadID, Int32 squadsize, Double squadScore, Boolean assigned)
         {
             _assigned = assigned;
             _teamID = teamID;

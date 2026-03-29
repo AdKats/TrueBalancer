@@ -1,14 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
 
 using PRoCon.Core;
@@ -35,13 +29,9 @@ namespace PRoConEvents
                 this.plugin = plugin;
             }
 
-
-
             //private HttpWebRequest req = null;
 
             WebClient client = null;
-
-
 
             private void fetchWebPage(ref String html_data, String url)
             {
@@ -77,7 +67,6 @@ namespace PRoConEvents
                     reader.Close();
                     dataStream.Close();
                     response.Close();
-
 
                     /*
                         if (client == null)
@@ -124,7 +113,6 @@ namespace PRoConEvents
                         fetchWebPage(ref result, "http://battlelog.battlefield.com/bf4/user/" + player);
                     }
 
-
                     /* Extract the persona id */
                     MatchCollection pid = Regex.Matches(result, @"/soldier/" + player + @"/stats/(\d+)(/\w*)?/", RegexOptions.IgnoreCase | RegexOptions.Singleline);
 
@@ -165,7 +153,6 @@ namespace PRoConEvents
                     if (!(type.StartsWith("success") && message.StartsWith("OK")))
                         throw new Exception("JSON response was type=" + type + ", message=" + message);
 
-
                     /* verify there is data structure */
                     Hashtable data = null;
                     if (!json.ContainsKey("data") || (data = (Hashtable)json["data"]) == null)
@@ -175,7 +162,6 @@ namespace PRoConEvents
                     if (!data.ContainsKey("overviewStats") || (stats = (Hashtable)data["overviewStats"]) == null)
                         throw new StatsException("^1^bERROR^0^n: JSON response ^bdata^n does not contain ^boverviewStats^n");
 
-
                     // get the data fields
 
                     if (st == ServerType.BF3)
@@ -183,16 +169,14 @@ namespace PRoConEvents
                         if (stats.ContainsKey("rank"))
                             Double.TryParse(stats["rank"].ToString(), out ps.rank);
 
-
                         if (stats.ContainsKey("elo"))
                             Double.TryParse(stats["elo"].ToString(), out ps.skill);
 
-                        double combatScore = 0;
-                        double score = 0;
-                        double timePlayed = 0;
-                        double kills = 0;
-                        double deaths = 0;
-
+                        Double combatScore = 0;
+                        Double score = 0;
+                        Double timePlayed = 0;
+                        Double kills = 0;
+                        Double deaths = 0;
 
                         if (stats.ContainsKey("combatScore"))
                             Double.TryParse(stats["combatScore"].ToString(), out combatScore);
@@ -229,16 +213,14 @@ namespace PRoConEvents
                         if (stats.ContainsKey("rank"))
                             Double.TryParse(stats["rank"].ToString(), out ps.rank);
 
-
                         if (stats.ContainsKey("skill"))
                             Double.TryParse(stats["skill"].ToString(), out ps.skill);
 
-                        double combatScore = 0;
-                        double score = 0;
-                        double timePlayed = 0;
-                        double kills = 0;
-                        double deaths = 0;
-
+                        Double combatScore = 0;
+                        Double score = 0;
+                        Double timePlayed = 0;
+                        Double kills = 0;
+                        Double deaths = 0;
 
                         if (stats.ContainsKey("combatScore"))
                             Double.TryParse(stats["combatScore"].ToString(), out combatScore);
@@ -282,7 +264,6 @@ namespace PRoConEvents
                     this.plugin.DebugInfoSkill("^8 Exception (^b" + player + "^n): " + e.Message);
                 }
 
-
                 return new PlayerStats();
             }
 
@@ -295,18 +276,17 @@ namespace PRoConEvents
                 return String.Empty;
             }
 
-
         }
 
         public class PlayerStats
         {
-            public double rank;
-            public double skill;
-            public double spm;
-            public double spmcombat;
-            public double kdr;
-            public string tag = String.Empty;
-            public bool statsFetched = false;
+            public Double rank;
+            public Double skill;
+            public Double spm;
+            public Double spmcombat;
+            public Double kdr;
+            public String tag = String.Empty;
+            public Boolean statsFetched = false;
 
             public void reset()
             {
@@ -320,8 +300,6 @@ namespace PRoConEvents
             }
 
         }
-
-
 
         #endregion
     }
