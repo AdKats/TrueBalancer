@@ -37,7 +37,7 @@ namespace PRoConEvents
 
         public string GetPluginAuthor()
         {
-            return "onegrizzlybeer, versions < 0.5 by Panther";
+            return "onegrizzlybeer, versions < 0.5 by Panther (maintained by Prophet731)";
         }
 
         public string GetPluginWebsite()
