@@ -1,14 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Web;
 
 using PRoCon.Core;
@@ -41,7 +34,7 @@ namespace PRoConEvents
             this.boolTeamsScrambled = false;
             this.intScrambledPlayers = 0;
             this.teamswitcher.Clear();
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (this.dicPlayerCache[kvp.Key].playerWL == 0 && !dicPlayerCache[kvp.Key].IsCommander && !dicPlayerCache[kvp.Key].IsSpectator)
                 {
@@ -66,7 +59,7 @@ namespace PRoConEvents
             this.boolTeamsScrambled = false;
             this.intScrambledPlayers = 0;
             this.teamswitcher.Clear();
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (this.dicPlayerCache[kvp.Key].playerWL == 0 && !dicPlayerCache[kvp.Key].IsCommander && !dicPlayerCache[kvp.Key].IsSpectator)
                 {
@@ -75,26 +68,25 @@ namespace PRoConEvents
             }
         }
 
-        public virtual void OnReservedSlotsList(List<string> soldierNames)
+        public virtual void OnReservedSlotsList(List<String> soldierNames)
         {
 
-
             this.strAWhitelistComplete = this.strAWhitelist;
-            List<string> listWL = new List<string>(this.strAWhitelist);
+            List<String> listWL = new List<String>(this.strAWhitelist);
 
             if (this.ynbWhitelist == enumBoolYesNo.Yes && this.ynbincludeVIPlist == enumBoolYesNo.Yes)
             {
 
                 //this.DebugInfo ("reservedSlots");
-                foreach (string name in soldierNames)
+                foreach (String name in soldierNames)
                 {
                     listWL.Add(name);
                 }
                 this.strAWhitelistComplete = listWL.ToArray();
-                string whitelist = "";
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+                String whitelist = "";
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
                 {
-                    if (((IList<string>)this.strAWhitelistComplete).Contains(kvp.Key))
+                    if (((IList<String>)this.strAWhitelistComplete).Contains(kvp.Key))
                     {
                         whitelist = whitelist + kvp.Key + ", ";
                     }
@@ -104,7 +96,7 @@ namespace PRoConEvents
             }
         }
 
-        public virtual void OnPlayerMovedByAdmin(string soldierName, int destinationTeamId, int destinationSquadId, bool forceKilled)
+        public virtual void OnPlayerMovedByAdmin(String soldierName, Int32 destinationTeamId, Int32 destinationSquadId, Boolean forceKilled)
         {
             this.boolscramblefailed = true;
             this.boolbalanced = true;
@@ -120,7 +112,7 @@ namespace PRoConEvents
             // }
         }
 
-        public override void OnResponseError(List<string> lstRequestWords, string strError)
+        public override void OnResponseError(List<String> lstRequestWords, String strError)
         {
 
             //DebugInfoSkill ("^3W: ^9" + strError);
@@ -135,9 +127,8 @@ namespace PRoConEvents
             }
         }
 
-        public virtual void OnLevelLoaded(string mapFileName, string Gamemode, int roundsPlayed, int roundsTotal)
+        public virtual void OnLevelLoaded(String mapFileName, String Gamemode, Int32 roundsPlayed, Int32 roundsTotal)
         {
-
 
             this.DTLevelLoaded = DateTime.Now;
             this.DebugInfo("^9New Level loaded");
@@ -167,7 +158,7 @@ namespace PRoConEvents
             }
         }
 
-        public override void OnRoundOver(int iWinningTeamID)
+        public override void OnRoundOver(Int32 iWinningTeamID)
         {
 
         }
@@ -180,8 +171,8 @@ namespace PRoConEvents
             this.EndRoundTime = DateTime.Now.AddSeconds(60);
             this.showfirstmove = false;
 
-            int TeamAScore = 0;
-            int TeamBScore = 0;
+            Int32 TeamAScore = 0;
+            Int32 TeamBScore = 0;
 
             this.intTicketsdif = 0;
 
@@ -250,8 +241,6 @@ namespace PRoConEvents
             this.DebugInfoSkill("^bTicketdifference at roundend: ^3" + this.intTicketsdif.ToString());
             this.DebugInfoSkill("^9Team 1 Data: ^7TBValue: ^b" + this.TBvalueA.ToString("F1") + "^n^0 - Rank: ^b" + this.rankA.ToString("F2") + "^n^1 - Skill: ^b" + this.skillA.ToString("F2") + "^n^2 - SPM: ^b" + this.spmA.ToString("F2") + "^n^3 - SPMcombat: ^b" + this.spmcombatA.ToString("F2") + "^n^4 - K/D: ^b" + this.kdrA.ToString("F2"));
             this.DebugInfoSkill("^9Team 2 Data: ^7TBValue: ^b" + this.TBvalueB.ToString("F1") + "^n^0 - Rank: ^b" + this.rankB.ToString("F2") + "^n^1 - Skill: ^b" + this.skillB.ToString("F2") + "^n^2 - SPM: ^b" + this.spmB.ToString("F2") + "^n^3 - SPMcombat: ^b" + this.spmcombatB.ToString("F2") + "^n^4 - K/D: ^b" + this.kdrB.ToString("F2"));
-
-
 
             if (this.boolscramblebyadminroundend && this.strcurrentGametype != "SquadDeathMatch0")
             {
@@ -454,7 +443,6 @@ namespace PRoConEvents
                 DebugInfoSkill(this.strcurrentGametype + ": ^8^bGamemode not supported or EndRound-Scrambler turned off for this gamemode.");
             }
 
-
             //          if (!this.boolTeamsScrambled && this.intCurrentRoundCount == 1 && this.boolticketdif == true  && this.ynbenableSkill==enumBoolYesNo.Yes){
             /*          if (!this.boolTeamsScrambled && this.boolticketdif == true  && this.ynbenableSkill==enumBoolYesNo.Yes){
                             if(this.ynbScrambleMap == enumBoolYesNo.No && this.ynbScrambleEveryRound == enumBoolYesNo.Yes && this.strcurrentGametype != "squadrush0" && this.strcurrentGametype != "rushlarge0"){
@@ -494,7 +482,7 @@ namespace PRoConEvents
         public virtual void OnRoundOverPlayers(List<CPlayerInfo> lstPlayers)
         {
 
-            foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+            foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
             {
                 if (this.dicPlayerCache[kvp.Key].playerWL != 1 && !dicPlayerCache[kvp.Key].IsCommander && !dicPlayerCache[kvp.Key].IsSpectator)
                 {
@@ -502,15 +490,15 @@ namespace PRoConEvents
                 }
             }
 
-            int i = 1;
+            Int32 i = 1;
             this.dicPlayerScore.Clear();
             this.dicSquadScore.Clear();
             this.bestSquadTeamID = 0;
 
             foreach (CPlayerInfo cpiPlayer in lstPlayers)
             {
-                double value = 0;
-                string tag = "";
+                Double value = 0;
+                String tag = "";
                 if (this.dicPlayerCache.ContainsKey(cpiPlayer.SoldierName))
                 {
                     value = this.dicPlayerCache[cpiPlayer.SoldierName].playerValue;
@@ -521,11 +509,11 @@ namespace PRoConEvents
                 i++;
             }
 
-            bool Sortiert;
+            Boolean Sortiert;
             do
             {
                 Sortiert = true;
-                for (int j = 1; j < this.dicPlayerScore.Count; j++)
+                for (Int32 j = 1; j < this.dicPlayerScore.Count; j++)
                 {
                     if (this.dicPlayerScore[j].playerValue < this.dicPlayerScore[j + 1].playerValue)
                     {
@@ -536,7 +524,6 @@ namespace PRoConEvents
                     }
                 }
             } while (!Sortiert);
-
 
             // bool Sortiert;
             // do{
@@ -553,7 +540,7 @@ namespace PRoConEvents
 
         }
 
-        public virtual void OnPlayerSpawned(string soldierName, Inventory spawnedInventory)
+        public virtual void OnPlayerSpawned(String soldierName, Inventory spawnedInventory)
         {
 
             if (this.boolLevelStart == false && this.boolLevelLoaded)
@@ -611,7 +598,7 @@ namespace PRoConEvents
 
             if (Servertype == "AUTOMATIC")
             {
-                if (string.IsNullOrEmpty(csiServerInfo.BlazeGameState))
+                if (String.IsNullOrEmpty(csiServerInfo.BlazeGameState))
                 {
                     DebugInfoSkill("BF3 detected");
                     Servertype = "BF3";
@@ -664,7 +651,6 @@ namespace PRoConEvents
                     }
                 }
             }
-
 
             if ((this.strcurrentGametype.Contains("Conquest") || this.strcurrentGametype.Contains("TankSuperiority0") || this.strcurrentGametype.Contains("Scavenger0") || this.strcurrentGametype.Contains("AirSuperiority0") || this.strcurrentGametype.Contains("CarrierAssault") || this.strcurrentGametype.Contains("Chainlink")) && this.boolLevelStart)
             {
@@ -776,7 +762,7 @@ namespace PRoConEvents
                 }
             }
 
-            int intticketdiffrence = 0;
+            Int32 intticketdiffrence = 0;
             //DebugInfoSkill("TicketCount: " + this.intTicketcount);
             if (this.intScoreTeamA > this.intScoreTeamB) intticketdiffrence = this.intScoreTeamA - this.intScoreTeamB;
             else if (this.intScoreTeamA < this.intScoreTeamB) intticketdiffrence = this.intScoreTeamB - this.intScoreTeamA;
@@ -985,9 +971,7 @@ namespace PRoConEvents
             
             */
 
-
             this.DebugInfo("Serverinfo: ^1ScoreA: ^i" + this.intScoreTeamA.ToString() + "^n, ^2ScoreB: ^i" + this.intScoreTeamB.ToString() + "^n, ^9RoundCount: ^i " + this.intCurrentRoundCount.ToString());
-
 
             UpdateCheck();
 
@@ -1003,7 +987,7 @@ namespace PRoConEvents
                     if (DateTime.Compare(updatehelper, DateTime.Now) <= 0)
                     {
                         WebClient wc = new WebClient();
-                        string latestversion = wc.DownloadString("https://forum.myrcon.com/showthread.php?7169");
+                        String latestversion = wc.DownloadString("https://forum.myrcon.com/showthread.php?7169");
 
                         latestversion = latestversion.Substring(latestversion.IndexOf("<title>") + 7);
                         latestversion = latestversion.Substring(0, latestversion.IndexOf("</title>"));
@@ -1027,8 +1011,8 @@ namespace PRoConEvents
 
         public override void OnListPlayers(List<CPlayerInfo> lstPlayers, CPlayerSubset cpsSubset)
         {
-            int numStatsFetch = this.intMaxPlayersToFetch;
-            int numRemaining = lstPlayers.Count;
+            Int32 numStatsFetch = this.intMaxPlayersToFetch;
+            Int32 numRemaining = lstPlayers.Count;
 
             if (lstPlayers.Count == 0 && this.boolnoplayer == false)
             {
@@ -1062,14 +1046,14 @@ namespace PRoConEvents
             {
                 List<String> removeFromCache = new List<String>();
 
-                int numWithStats = 0;
+                Int32 numWithStats = 0;
                 foreach (String k in this.dicPlayerCache.Keys)
                 {
                     if (this.dicPlayerCache[k].statsFetched) ++numWithStats;
                 }
                 DebugInfoSkill("OnListPlayers: Players = " + lstPlayers.Count + " vs Known with stats = " + numWithStats);
 
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp in this.dicPlayerCache)
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp in this.dicPlayerCache)
                 {
                     if (this.m_isPluginEnabled == false) break;
 
@@ -1096,7 +1080,6 @@ namespace PRoConEvents
                             }
                             this.dicPlayerCache[kvp.Key].playerSquad = cpiPlayer.SquadID;
                             this.dicPlayerCache[kvp.Key].score = cpiPlayer.Score;
-
 
                             if (this.strcurrentGametype.Contains("Conquest") || this.strcurrentGametype.Contains("TankSuperiority0") || this.strcurrentGametype.Contains("Scavenger0") || this.strcurrentGametype.Contains("AirSuperiority0") || this.strcurrentGametype.Contains("CarrierAssault") || this.strcurrentGametype.Contains("Chainlink"))
                             {
@@ -1288,9 +1271,7 @@ namespace PRoConEvents
                                 }
                             }
 
-
-
-                            if ((((IList<string>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<string>)this.strAClantagWhitelist).Contains(dicPlayerCache[cpiPlayer.SoldierName].tag) && dicPlayerCache[cpiPlayer.SoldierName].tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
+                            if ((((IList<String>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<String>)this.strAClantagWhitelist).Contains(dicPlayerCache[cpiPlayer.SoldierName].tag) && dicPlayerCache[cpiPlayer.SoldierName].tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
                             {
                                 this.dicPlayerCache[kvp.Key].playerWL = 1;
                             }
@@ -1316,7 +1297,6 @@ namespace PRoConEvents
                         this.dicPlayerCache.Remove(s);
                     }
                 }
-
 
                 foreach (CPlayerInfo cpiPlayer in lstPlayers)
                 {
@@ -1532,9 +1512,7 @@ namespace PRoConEvents
                             }
                         }
 
-
-
-                        if ((((IList<string>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<string>)this.strAClantagWhitelist).Contains(dicPlayerCache[cpiPlayer.SoldierName].tag) && dicPlayerCache[cpiPlayer.SoldierName].tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
+                        if ((((IList<String>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<String>)this.strAClantagWhitelist).Contains(dicPlayerCache[cpiPlayer.SoldierName].tag) && dicPlayerCache[cpiPlayer.SoldierName].tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
                         {
                             this.dicPlayerCache[cpiPlayer.SoldierName].playerWL = 1;
                         }
@@ -1568,31 +1546,30 @@ namespace PRoConEvents
                             --numStatsFetch;
                         }
 
-                        double ValueTemp = 0;
+                        Double ValueTemp = 0;
 
-                        double tempskill = stats.skill;
+                        Double tempskill = stats.skill;
 
                         if (tempskill == 0)
                             tempskill = (this.skillA + this.skillB) / 2;
                         else if (tempskill < 0)
                             tempskill = 0;
 
-                        double tempspm = stats.spm;
+                        Double tempspm = stats.spm;
                         if (tempspm == 0)
                             tempspm = (this.spmA + this.spmB) / 2;
 
-                        double tempspmcombat = stats.spmcombat;
+                        Double tempspmcombat = stats.spmcombat;
                         if (tempspmcombat == 0)
                         {
                             tempspmcombat = (this.spmcombatA + this.spmcombatB) / 2;
                         }
 
-                        double tempkdr = stats.kdr;
+                        Double tempkdr = stats.kdr;
                         if (tempkdr == 0)
                             tempkdr = (this.kdrA + this.kdrB) / 2;
 
-
-                        double TBvalueTemp = TBValue(stats.rank, tempskill, tempspm, tempspmcombat, tempkdr);
+                        Double TBvalueTemp = TBValue(stats.rank, tempskill, tempspm, tempspmcombat, tempkdr);
 
                         if (this.strcurrentGametype.Contains("Conquest") || this.strcurrentGametype.Contains("TankSuperiority0") || this.strcurrentGametype.Contains("Scavenger") || this.strcurrentGametype.Contains("AirSuperiority0") || this.strcurrentGametype.Contains("CarrierAssault") || this.strcurrentGametype.Contains("Chainlink"))
                         {
@@ -1784,9 +1761,9 @@ namespace PRoConEvents
                             }
                         }
 
-                        bool commander = cpiPlayer.Type == 1 || cpiPlayer.Type == 2 ? true : false;
-                        bool spectator = cpiPlayer.Type == 3 ? true : false;
-                        if ((((IList<string>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<string>)this.strAClantagWhitelist).Contains(stats.tag) && stats.tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
+                        Boolean commander = cpiPlayer.Type == 1 || cpiPlayer.Type == 2 ? true : false;
+                        Boolean spectator = cpiPlayer.Type == 3 ? true : false;
+                        if ((((IList<String>)this.strAWhitelistComplete).Contains(cpiPlayer.SoldierName) || (((IList<String>)this.strAClantagWhitelist).Contains(stats.tag) && stats.tag != String.Empty)) && this.ynbWhitelist == enumBoolYesNo.Yes)
                         {
 
                             CPlayerJoinInf newEntry = new CPlayerJoinInf(cpiPlayer.TeamID, 1, cpiPlayer.SquadID, DateTime.Now, cpiPlayer.Score, stats.rank, tempskill, tempspm, tempspmcombat, tempkdr, TBvalueTemp, ValueTemp, stats.tag, false, commander, spectator);
@@ -1825,18 +1802,15 @@ namespace PRoConEvents
                     this.ExecuteCommand("procon.protected.send", "reservedSlotsList.list");
                 }
 
-
                 this.strMovedPlayer = "";
                 this.boolmanuellchange = false;
                 this.DebugInfo("-------OP-------");
 
-
-                string printSoldier = "";
-                string strPlayerlist = "";
-                string strPLTeam1 = "";
-                string strPLTeam2 = "";
-                string strPLNeutral = "";
-
+                String printSoldier = "";
+                String strPlayerlist = "";
+                String strPLTeam1 = "";
+                String strPLTeam2 = "";
+                String strPLNeutral = "";
 
                 /*  Dictionary<string, CPlayerJoinInf> dicSorted = new Dictionary<string, CPlayerJoinInf>();
                 
@@ -1844,21 +1818,21 @@ namespace PRoConEvents
                             orderby dicPlayerCache[k].Playerjoined ascending
                             select k; */
 
-                Dictionary<string, CPlayerJoinInf> dicPlayerSorted = new Dictionary<string, CPlayerJoinInf>();
+                Dictionary<String, CPlayerJoinInf> dicPlayerSorted = new Dictionary<String, CPlayerJoinInf>();
 
-                string whitelisttemp = "^2";
+                String whitelisttemp = "^2";
 
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp1 in this.dicPlayerCache)
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp1 in this.dicPlayerCache)
                 {
                     if (this.dicPlayerCache[kvp1.Key].playerWL == 1 || dicPlayerCache[kvp1.Key].IsCommander || dicPlayerCache[kvp1.Key].IsSpectator)
                     {
                         whitelisttemp = whitelisttemp + "^b" + kvp1.Key + "^n" + ", ";
                     }
                     // DateTime maxValueJoined = new DateTime();
-                    double minpoints = 100000000;
-                    KeyValuePair<string, CPlayerJoinInf> kvplastjoiner = new KeyValuePair<string, CPlayerJoinInf>();
+                    Double minpoints = 100000000;
+                    KeyValuePair<String, CPlayerJoinInf> kvplastjoiner = new KeyValuePair<String, CPlayerJoinInf>();
 
-                    foreach (KeyValuePair<string, CPlayerJoinInf> kvp2 in this.dicPlayerCache)
+                    foreach (KeyValuePair<String, CPlayerJoinInf> kvp2 in this.dicPlayerCache)
                     {
                         if (this.dicPlayerCache[kvp2.Key].score <= minpoints && dicPlayerSorted.ContainsKey(kvp2.Key) == false)
                         {
@@ -1869,8 +1843,7 @@ namespace PRoConEvents
                     dicPlayerSorted.Add(kvplastjoiner.Key, kvplastjoiner.Value);
                 }
 
-
-                foreach (KeyValuePair<string, CPlayerJoinInf> kvp in dicPlayerSorted)
+                foreach (KeyValuePair<String, CPlayerJoinInf> kvp in dicPlayerSorted)
                 {
                     printSoldier = kvp.Key.Replace("{", "(");
                     printSoldier = printSoldier.Replace("}", ")");
@@ -1920,7 +1893,6 @@ namespace PRoConEvents
 
                 //this.DebugInfo("WaitSeconds: " + this.intWaitSeconds.ToString());
 
-
                 this.TSLevelStartWait = DateTime.Now - this.DTLevelStart;
                 if (this.boolLevelStart && this.TSLevelStartWait.TotalSeconds > 30)
                 {
@@ -1953,14 +1925,14 @@ namespace PRoConEvents
 
                 DebugInfoSkill("^3OnListPlayers, skill scramble in progress");
 
-                double afterscrambleValueA = 0;
-                double afterscrambleTeamSizeA = 0;
-                double afterscrambleValueB = 0;
-                double afterscrambleTeamSizeB = 0;
+                Double afterscrambleValueA = 0;
+                Double afterscrambleTeamSizeA = 0;
+                Double afterscrambleValueB = 0;
+                Double afterscrambleTeamSizeB = 0;
                 if (this.boolscrambleNow && this.boolRunOnList)
                 {
                     this.boolTeamsScrambled = true;
-                    foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+                    foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
                     {
                         if (this.m_isPluginEnabled == false) break;
                         foreach (CPlayerInfo cpiPlayer in lstPlayers)
@@ -1997,7 +1969,7 @@ namespace PRoConEvents
                         this.boolRunOnList = false;
                         this.DebugInfoSkill("^b^2Teams are scrambled now!");
                         this.DebugInfoSkill("Team 1 Value: ^b^2" + afterscrambleValueA / afterscrambleTeamSizeA + "^9*^7" + afterscrambleTeamSizeA + "^n^9 --- Team 2 Value: ^b^2" + afterscrambleValueB / afterscrambleTeamSizeB + "^9*^7" + afterscrambleTeamSizeB);
-                        double valuediffendround = afterscrambleValueA / afterscrambleTeamSizeA - afterscrambleValueB / afterscrambleTeamSizeB;
+                        Double valuediffendround = afterscrambleValueA / afterscrambleTeamSizeA - afterscrambleValueB / afterscrambleTeamSizeB;
                         this.DebugInfoSkill("ValueDifference: ^b^2" + valuediffendround);
                         TimeSpan ScrambleDuration = DateTime.Now - this.DTScramblestarted;
                         this.DebugInfoSkill("ScrambleDuration: " + ScrambleDuration.TotalSeconds.ToString("F2") + " seconds");
@@ -2046,7 +2018,7 @@ namespace PRoConEvents
             DebugInfoSkill("OnListPlayers handler returning");
         }
 
-        public virtual void OnPlayerSquadChange(string soldierName, int teamId, int squadId)
+        public virtual void OnPlayerSquadChange(String soldierName, Int32 teamId, Int32 squadId)
         {
 
             TimeSpan ScrambleTime = new TimeSpan(0);
@@ -2065,9 +2037,8 @@ namespace PRoConEvents
                 this.boolplayerleft = false;
         }
 
-        public override void OnPlayerTeamChange(string strSoldierName, int iTeamID, int iSquadID)
+        public override void OnPlayerTeamChange(String strSoldierName, Int32 iTeamID, Int32 iSquadID)
         {
-
 
             if (DateTime.Now > this.EndRoundTime && this.showfirstmove == false && this.dicPlayerCache[strSoldierName].teamID != 0)
             {
@@ -2104,12 +2075,12 @@ namespace PRoConEvents
                     if (this.ynbBalancingGuard == enumBoolYesNo.Yes && this.boolFirstOP && this.OnCommandMove.ContainsKey(strSoldierName) == false)
                     {
 
-                        string sortBy = "";
-                        double sortValueA = 0;
-                        double sortValueB = 0;
-                        double goodplayer = 0;
-                        double badplayer = 0;
-                        double dblValueDiff = 0;
+                        String sortBy = "";
+                        Double sortValueA = 0;
+                        Double sortValueB = 0;
+                        Double goodplayer = 0;
+                        Double badplayer = 0;
+                        Double dblValueDiff = 0;
 
                         if (this.strcurrentGametype.Contains("Conquest") || this.strcurrentGametype.Contains("TankSuperiority0") || this.strcurrentGametype.Contains("Scavenger") || this.strcurrentGametype.Contains("AirSuperiority0") || this.strcurrentGametype.Contains("CarrierAssault") || this.strcurrentGametype.Contains("Chainlink"))
                         {
@@ -2129,7 +2100,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByCONQUEST == "Skill")
@@ -2137,7 +2107,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2147,7 +2116,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByCONQUEST == "SPMcombat")
@@ -2156,7 +2124,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByCONQUEST == "K/D")
@@ -2164,7 +2131,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2187,7 +2153,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByDOM == "Skill")
@@ -2195,7 +2160,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2205,7 +2169,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByDOM == "SPMcombat")
@@ -2214,7 +2177,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByDOM == "K/D")
@@ -2222,7 +2184,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2245,7 +2206,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByCONQUEST == "Skill")
@@ -2253,7 +2213,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2263,7 +2222,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByCONQUEST == "SPMcombat")
@@ -2272,7 +2230,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByCONQUEST == "K/D")
@@ -2280,7 +2237,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2303,7 +2259,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByRUSH == "Skill")
@@ -2311,7 +2266,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2321,7 +2275,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByRUSH == "SPMcombat")
@@ -2330,7 +2283,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByRUSH == "K/D")
@@ -2338,7 +2290,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2361,7 +2312,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByGM == "Skill")
@@ -2369,7 +2319,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2379,7 +2328,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByGM == "SPMcombat")
@@ -2388,7 +2336,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByGM == "K/D")
@@ -2396,7 +2343,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2419,7 +2365,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByDF == "Skill")
@@ -2427,7 +2372,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2437,7 +2381,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmA;
                                 sortValueB = this.spmB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spm;
                             }
                             else if (this.ScrambleByDF == "SPMcombat")
@@ -2446,7 +2389,6 @@ namespace PRoConEvents
                                 sortValueA = this.spmcombatA;
                                 sortValueB = this.spmcombatB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].spmcombat;
                             }
                             else if (this.ScrambleByDF == "K/D")
@@ -2454,7 +2396,6 @@ namespace PRoConEvents
                                 sortBy = "K/D";
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
@@ -2477,7 +2418,6 @@ namespace PRoConEvents
                                 sortValueA = this.rankA;
                                 sortValueB = this.rankB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].rank;
                             }
                             else if (this.ScrambleByTDM == "Skill")
@@ -2485,7 +2425,6 @@ namespace PRoConEvents
                                 sortBy = "Skill";
                                 sortValueA = this.skillA;
                                 sortValueB = this.skillB;
-
 
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].skill;
                             }
@@ -2511,30 +2450,25 @@ namespace PRoConEvents
                                 sortValueA = this.kdrA;
                                 sortValueB = this.kdrB;
 
-
                                 this.dicPlayerCache[strSoldierName].playerValue = this.dicPlayerCache[strSoldierName].kdr;
                             }
                         }
 
-
-                        double serveraverage = (sortValueA * this.TeamA + sortValueB * this.TeamB) / (this.TeamA + this.TeamB);
+                        Double serveraverage = (sortValueA * this.TeamA + sortValueB * this.TeamB) / (this.TeamA + this.TeamB);
                         goodplayer = 1.25 * serveraverage;
                         badplayer = 0.75 * serveraverage;
-
 
                         //bool TeamAbetter = false;
                         //bool TeamBbetter = false;
 
-
-
-                        int Maxdifference = this.intAllowDif - 1;
-                        double goodvalue = 0;
-                        double badvalue = 0;
-                        double valuediff = 0;
-                        int betterteam = 0;
-                        int otherteam = 0;
-                        int scorediff = 0;
-                        int playerdiff = 0;
+                        Int32 Maxdifference = this.intAllowDif - 1;
+                        Double goodvalue = 0;
+                        Double badvalue = 0;
+                        Double valuediff = 0;
+                        Int32 betterteam = 0;
+                        Int32 otherteam = 0;
+                        Int32 scorediff = 0;
+                        Int32 playerdiff = 0;
 
                         if (sortValueA > sortValueB)
                         {
@@ -2560,8 +2494,8 @@ namespace PRoConEvents
 
                             if (!this.teamswitcher.Contains(strSoldierName))
                             {
-                                int newdiff = 0;
-                                int teamsizemax = 0;
+                                Int32 newdiff = 0;
+                                Int32 teamsizemax = 0;
                                 if (iTeamID == 1)
                                 {
                                     newdiff = this.TeamA - this.TeamB;
@@ -2930,9 +2864,9 @@ namespace PRoConEvents
                             if (!this.teamswitcher.Contains(strSoldierName))
                             {
 
-                                int toteam = iTeamID;
-                                double switchingvalue = 0;
-                                int fromteam = this.dicPlayerCache[strSoldierName].teamID;
+                                Int32 toteam = iTeamID;
+                                Double switchingvalue = 0;
+                                Int32 fromteam = this.dicPlayerCache[strSoldierName].teamID;
 
                                 if (this.BalancedPlayers.Contains(strSoldierName) == false)
                                 {
@@ -3000,7 +2934,7 @@ namespace PRoConEvents
 
                                     if (this.ynbShameMessage == enumBoolYesNo.Yes)
                                     {
-                                        string strTEMP = this.strShameMessage.Replace("%TeamSwitcher%", strSoldierName);
+                                        String strTEMP = this.strShameMessage.Replace("%TeamSwitcher%", strSoldierName);
                                         if (this.boolVirtual)
                                         {
                                             this.ExecuteCommand("procon.protected.pluginconsole.write", "^b[TB] VIRTUAL^n admin.say all - " + strTEMP);
@@ -3163,7 +3097,6 @@ namespace PRoConEvents
             this.boolplayerleft = true;
             // int WaitforLevel = 0;
 
-
             // WaitforLevel = this.TSLevelStartWait.Hours * 3600 + this.TSLevelStartWait.Minutes * 60 + this.TSLevelStartWait.Seconds;
 
             this.DebugInfo("player left: ^0^b" + cpiPlayer.SoldierName + "^n^0 " + this.boolLevelStart.ToString());
@@ -3173,7 +3106,7 @@ namespace PRoConEvents
             // this.ExecuteCommand("procon.protected.send", "admin.listPlayers", "all");
             // } 
 
-            string printSoldier = "";
+            String printSoldier = "";
             printSoldier = cpiPlayer.SoldierName.Replace("{", "(");
             printSoldier = printSoldier.Replace("}", ")");
 
@@ -3183,8 +3116,8 @@ namespace PRoConEvents
                 this.dicPlayerCache.Remove(cpiPlayer.SoldierName);
             }
 
-            int toberomved = -1;
-            foreach (KeyValuePair<int, CPlayerScoreInf> kvp in this.dicPlayerScore)
+            Int32 toberomved = -1;
+            foreach (KeyValuePair<Int32, CPlayerScoreInf> kvp in this.dicPlayerScore)
             {
                 if (this.dicPlayerScore[kvp.Key].playerName == cpiPlayer.SoldierName)
                 {
@@ -3223,10 +3156,8 @@ namespace PRoConEvents
             }
         }
 
-        public void OnPlayerKilled(Kill killInfo)
+        public override void OnPlayerKilled(Kill killInfo)
         {
-
-
 
             if (killInfo == null)
                 return;
@@ -3246,7 +3177,7 @@ namespace PRoConEvents
                     else
                     {
                         this.DebugInfoGuard("^2Trying to move dead player to the other side, due to TB-MoveCommand: ^b" + killInfo.Victim.SoldierName);
-                        int team = 0;
+                        Int32 team = 0;
 
                         if (this.dicPlayerCache[killInfo.Victim.SoldierName].teamID == 1)
                             team = 2;
@@ -3277,7 +3208,6 @@ namespace PRoConEvents
 
                 }
 
-
             }
             else if (this.boolwaitfordeath)
             {
@@ -3303,8 +3233,6 @@ namespace PRoConEvents
                 }
             }
         }
-
-
 
         #endregion
     }
