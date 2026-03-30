@@ -801,6 +801,4 @@ namespace PRoConEvents
 
     #endregion
 
-#endregion
-
 }
