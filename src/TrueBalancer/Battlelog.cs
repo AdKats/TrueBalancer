@@ -1,9 +1,9 @@
 using System;
 using System.Collections;
-using System.IO;
-using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
+using System.Threading.Tasks;
+
+using Flurl.Http;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -29,61 +29,18 @@ namespace PRoConEvents
                 this.plugin = plugin;
             }
 
-            //private HttpWebRequest req = null;
-
-            WebClient client = null;
-
             private void fetchWebPage(ref String html_data, String url)
             {
                 try
                 {
-
-                    // Create a request for the URL.        
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                    // Set Timeout
-                    //plugin.DebugInfoSkill("Default timeout: " + request.Timeout);
-                    request.Timeout = 12 * 1000; // 12 seconds
-                    request.ReadWriteTimeout = 2 * 1000; // 2 seconds
-                    request.KeepAlive = false;
-                    /*
-                    String h = "Headers: ";
-                    for (int k = 0; k < request.Headers.Count; k++) {
-                        h = h + request.Headers.GetKey(k) + ":" + request.Headers.Get(k) + ";";
-                    }
-                    plugin.DebugInfoSkill(h);
-                    */
-                    //plugin.DebugInfoSkill("New timeout: " + request.Timeout);
-                    // Get the response.
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-                    // Display the status.
-                    //plugin.DebugInfoSkill("HTTP Response: " + response.StatusDescription);
-                    // Get the stream containing content returned by the server.
-                    Stream dataStream = response.GetResponseStream();
-                    // Open the stream using a StreamReader for easy access.
-                    StreamReader reader = new StreamReader(dataStream);
-                    // Read the content.
-                    html_data = reader.ReadToEnd();
-                    // Cleanup the streams and the response.
-                    reader.Close();
-                    dataStream.Close();
-                    response.Close();
-
-                    /*
-                        if (client == null)
-                            client = new WebClient();
-
-                        html_data = client.DownloadString(url);
-                        //return html_data;
-                    */
-
+                    html_data = url
+                        .WithTimeout(12)
+                        .GetStringAsync()
+                        .Result;
                 }
-                catch (WebException e)
+                catch (FlurlHttpException e) when (e.InnerException is TaskCanceledException)
                 {
-                    if (e.Status.Equals(WebExceptionStatus.Timeout))
-                        throw new Exception("HTTP request timed-out");
-                    else
-                        throw;
-
+                    throw new Exception("HTTP request timed-out");
                 }
             }
 

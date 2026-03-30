@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Net;
-using System.Web;
+
+using Flurl.Http;
 
 using PRoCon.Core;
 using PRoCon.Core.Battlemap;
@@ -986,8 +986,7 @@ namespace PRoConEvents
                     DateTime updatehelper = lastupdatecheck.AddHours(3);
                     if (DateTime.Compare(updatehelper, DateTime.Now) <= 0)
                     {
-                        WebClient wc = new WebClient();
-                        String latestversion = wc.DownloadString("https://forum.myrcon.com/showthread.php?7169");
+                        String latestversion = "https://forum.myrcon.com/showthread.php?7169".GetStringAsync().Result;
 
                         latestversion = latestversion.Substring(latestversion.IndexOf("<title>") + 7);
                         latestversion = latestversion.Substring(0, latestversion.IndexOf("</title>"));
